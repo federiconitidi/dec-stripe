@@ -18,9 +18,9 @@ import time
 app=Flask(__name__)
 app.secret_key='Federico'
 
-@app.before_first_request
-def initialize_database():
-    Database.initialize()
+##@app.before_first_request
+##def initialize_database():
+##    Database.initialize()
 
 @app.route('/')
 def index():
