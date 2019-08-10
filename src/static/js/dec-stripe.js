@@ -6,6 +6,10 @@
 $(document).ready(function () {
     console.log( "ready!" );
     create_fingerprint();
+    if (localStorage['pending_transactions'] == undefined){
+        localStorage['pending_transactions'] = JSON.stringify([])
+    }
+    refreshPendingTransactions()
 
 
    
@@ -214,11 +218,20 @@ function waitForDbReady() {
             }
         }
         
+        // check if there are transactions in progress for creating a new payment contract
+        pending_contracts_of_this_account = []
+        full_data = JSON.parse(localStorage['pending_transactions'])
+        for (i = 0, len = full_data.length; i < len; i++) {
+            if (full_data[i]['type'] == 'createPaymentContract') {
+                pending_contracts_of_this_account = $.merge(pending_contracts_of_this_account, [full_data[i]])
+            }
+        }
+        
         pages_list = sessionStorage['navigation_history'].split(',')
         current_page = pages_list[pages_list.length-1]
         console.log('updating allstores page vs blockchain')
         if (current_page == '/allstores'){
-            if (contracts_of_this_account.length > 0) {
+            if (contracts_of_this_account.length > 0 || pending_contracts_of_this_account.length > 0) {
                 // if the user owns some existing stores, display them
                 document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
                 
@@ -226,6 +239,10 @@ function waitForDbReady() {
                 for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
                     rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'])
                 }
+                for (i = 0, len = pending_contracts_of_this_account.length; i < len; i++) {
+                    rows = rows + document.getElementById("pending_store_row").innerHTML.replace(/{hash_shortened}/g, pending_contracts_of_this_account[i]['hash'].substring(0, 10) + "...").replace(/{hash}/g, pending_contracts_of_this_account[i]['hash'])
+                }
+                
                 document.getElementById("existing_stores").innerHTML = rows
                 setTimeout("findStoresInBlockchain();", 2000);
                 
@@ -239,6 +256,48 @@ function waitForDbReady() {
 }
 
 
+
+function refreshPendingTransactions() {
+    // check if there are transactions in progress
+    full_data = JSON.parse(localStorage['pending_transactions'])
+    for (i = 0, len = full_data.length; i < len; i++) {
+        web3.eth.getTransactionReceipt(full_data[i]['hash'], function(e, data) {
+                    if (e !== null) {
+                        console.log("Could not find a transaction for your id!");
+                        // still include the transaction, do nothing
+                    } else if (data == null){
+                        // still include the transaction, do nothing
+                    } else {
+                        if (data.status == '0x0') {
+                            console.log("The contract execution was not successful, check your transaction !");
+                            // pop the transaction from the list
+                            current_pending = JSON.parse(localStorage['pending_transactions'])
+                            for (i = 0, len = current_pending.length; i < len; i++) {
+                                if (current_pending[i]['hash'] == data['transactionHash']) {
+                                    current_pending = current_pending.splice(i, 1);
+                                }
+                            }
+                            localStorage['pending_transactions'] = JSON.stringify(current_pending)
+
+                        } else {
+                            console.log("Execution worked fine!");
+                            // pop the transaction from the list
+                            current_pending = JSON.parse(localStorage['pending_transactions'])
+                            for (i = 0, len = current_pending.length; i < len; i++) {
+                                if (current_pending[i]['hash'] == data['transactionHash']) {
+                                    current_pending.splice(i, 1);
+                                }
+                                
+                            }
+                            localStorage['pending_transactions'] = JSON.stringify(current_pending)
+                            console.log(current_pending)
+                        }
+                    }
+                    
+        })
+    }
+    setTimeout("refreshPendingTransactions();", 1000);
+}
 
 function queryPaymentContractOwner(account, contract_address) {
     sessionStorage['payment_contract_owner'] = 'nodata'
@@ -370,6 +429,9 @@ function createPaymentContract() {
         if (!error){
             console.log('Succesfully approved transaction to create a new payment contract');
             console.log(result);
+            full_data = JSON.parse(localStorage['pending_transactions'])
+            full_data = $.merge(full_data, [{'type' : 'createPaymentContract', 'hash' : result, 'status' : 'pending'}]);
+            localStorage['pending_transactions'] = JSON.stringify(full_data)
         } else {
             console.log('error');
         }
