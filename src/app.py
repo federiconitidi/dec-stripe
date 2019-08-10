@@ -26,6 +26,14 @@ app.secret_key='Federico'
 def index():
     return render_template('frontend.html')
 
+@app.route('/store/<string:metadata>')
+def bla(metadata):
+    return render_template('frontend.html')
+
+@app.route('/allstores/')
+def allstores():
+    return render_template('frontend.html')
+
 if __name__=='__main__':
     app.run(port=4995)
 

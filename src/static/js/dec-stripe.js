@@ -6,22 +6,102 @@
 $(document).ready(function () {
     console.log( "ready!" );
     create_fingerprint();
-    connectWeb3()
+
+
+   
+    if (window.location.href.indexOf("/store/") >= 0){
+        // extract the parameters: address and (if present) pool
+        metadata = window.location.href.slice(window.location.href.indexOf("/store/")+7 , window.location.href.lenght)
+        contract_address = metadata
+        console.log('enetered direct store')
+        console.log(metadata)
+        // go to the store page
+        sessionStorage['contract_address'] = contract_address
+        sessionStorage['navigation_history']=',/#,/allstores'
+        changePage('/store')
+    } else if (window.location.href.indexOf("/allstores") >= 0) {
+            sessionStorage['navigation_history']=''
+            changePage('/#')
+        
+    } else {
+        sessionStorage['navigation_history']=''
+        changePage('/#')
+    }
 });
 
 
+
+function changePage(extension) {
+        document.getElementById("content_card").innerHTML = ''
+        var parent = document.getElementById("content_card")
+        
+        // save current path - basically where I'm now
+        pages_list = sessionStorage['navigation_history'].split(',')
+        current_page = pages_list[pages_list.length-1]
+        console.log(current_page)
+        // only in the case of the waiting page, don't put that in the cronology
+        if(current_page != extension){
+                sessionStorage['navigation_history'] = sessionStorage['navigation_history'] + ',' + extension
+        }
+        console.log(sessionStorage['navigation_history'])
+        // understand which page to load based on the extension
+        // first, separate the parameters, which we conventionally separate with "#"
+        // the first element of the list will be the page (e.g. /pool/mamma), and the following elements, if present, are the parameters
+        routing_list = extension.split("&")
+        
+        // check if there are parameters or not
+        if (routing_list.length==1) {
+            // in this case, there are no parameters, just the page 
+            new_page = routing_list[0]
+            parameters = []
+        } else {
+            // in this case, there are both the page and some parameters
+            new_page = routing_list[0]
+            parameters = []
+        }
+    
+        // now that we know which page we need to go next, load this page
+        // first, let's adapt the url in the browser bar
+        console.log(new_page)
+        // then, load the right page
+        if (new_page=='/store'){
+            window.history.pushState(null, null, extension + '/' + sessionStorage['contract_address']);
+            getManageStorePage()
+        }  else if (new_page=='/allstores') {
+            window.history.pushState(null, null, extension);
+            account = sessionStorage['account_address']
+            findStoresInBlockchain(account)
+        }  else if (new_page=='/#') {
+            window.history.pushState(null, null, extension);
+            getStartedPage()
+        }
+        return false;
+}
+
+
+
+// handles the popstate events, i.e. when a user click on the "back" button on the browser
+$(window).on("popstate", function(e) {
+        pageBack()
+});
+
+function pageBack() {
+        previous_pages_list = sessionStorage['navigation_history'].split(',')
+        //console.log(previous_pages_list)
+        previous_page = previous_pages_list[previous_pages_list.length-2]
+        //console.log(previous_page)
+        if (previous_pages_list.slice(0,-2).length == 0) {
+            window.history.back()
+        } else {
+            sessionStorage['navigation_history'] = previous_pages_list.slice(0,-2).join(',')
+            changePage(previous_page)
+        }
+}
 
 function getStartedPage() {
     document.getElementById("content_card").innerHTML = document.getElementById("before_connecting_element").innerHTML
 }
 
-function getCreateCheckoutPage() {
-    document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
-}
-
-function getExistingCheckoutPage() {
-    document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
-}
 
 
 // initiate connetcion with web3 browser
@@ -59,13 +139,13 @@ function checkWeb3Connection() {
     var account = web3.eth.accounts[0];
     if (account == undefined) {
         setTimeout(checkWeb3Connection, 100)
-        getStartedPage()
+        
 
     } else {
         sessionStorage['account_address'] = account
         console.log("web3 access granted on " + account)
         document.getElementById("account_address").innerHTML = account.substring(0, 15) + "..."
-        findStoresInBlockchain(account)
+        changePage('/allstores')
     }
 }
 
@@ -126,7 +206,8 @@ function waitForDbReady() {
         
         if (contracts_of_this_account.length > 0) {
             // if the user owns some existing stores, display them
-            getExistingCheckoutPage()
+            document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
+            
             rows = ''
             for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
                 rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'])
@@ -134,10 +215,11 @@ function waitForDbReady() {
             document.getElementById("existing_stores").innerHTML = rows
         } else {
             // if the user doesn't own any store, go to the checkout creation page
-            getCreateCheckoutPage()
+            document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
         }
     }
 }
+
 
 
 function queryPaymentContractOwner(account, contract_address) {
@@ -213,16 +295,21 @@ function waitForProductsDbReady() {
     }
 }
 
-
-function manageStore(data) {
+function manageStore(data){
     contract_address = data.getAttribute("contract_address")
     sessionStorage['contract_address'] = contract_address
+    changePage('/store')
+}
+
+function getManageStorePage() {
+    contract_address = sessionStorage['contract_address']
     account = sessionStorage['account']
     queryPaymentContractOwner(account, contract_address)
     queryPaymentContractWallet(account, contract_address)
     queryPaymentContractProducts(account, contract_address)
-    waitForPaymentContractDataLoaded();
+    waitForPaymentContractDataLoaded()
 }
+
 
 
 function waitForPaymentContractDataLoaded() {
