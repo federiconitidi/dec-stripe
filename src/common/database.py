@@ -10,7 +10,7 @@ import os
 class Database(object):
     #URI = "mongodb://127.0.0.1:27017"  #
     
-    URI = "mongodb://heroku_jj05tlf7:jdrqksrhesbhmrts1ar160ep4p@ds133290.mlab.com:33290/heroku_jj05tlf7"
+    URI = "mongodb://heroku_8zpwvc6f:b5k3g8ako8hepru6noj7ntpmsi@ds261567.mlab.com:61567/heroku_8zpwvc6f"
 
 
     print(URI)

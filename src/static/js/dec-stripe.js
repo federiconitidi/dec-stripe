@@ -69,6 +69,7 @@ function changePage(extension) {
         // then, load the right page
         if (new_page=='/store'){
             window.history.pushState(null, null, extension + '/' + sessionStorage['contract_address']);
+            sessionStorage['window_timestamp'] = window.location.href
             getManageStorePage()
         }  else if (new_page=='/allstores') {
             window.history.pushState(null, null, extension);
@@ -213,18 +214,26 @@ function waitForDbReady() {
             }
         }
         
-        if (contracts_of_this_account.length > 0) {
-            // if the user owns some existing stores, display them
-            document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
-            
-            rows = ''
-            for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
-                rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'])
+        pages_list = sessionStorage['navigation_history'].split(',')
+        current_page = pages_list[pages_list.length-1]
+        console.log('updating allstores page vs blockchain')
+        if (current_page == '/allstores'){
+            if (contracts_of_this_account.length > 0) {
+                // if the user owns some existing stores, display them
+                document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
+                
+                rows = ''
+                for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
+                    rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'])
+                }
+                document.getElementById("existing_stores").innerHTML = rows
+                setTimeout("findStoresInBlockchain();", 2000);
+                
+            } else {
+                // if the user doesn't own any store, go to the checkout creation page
+                document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
+                setTimeout("findStoresInBlockchain();", 2000);
             }
-            document.getElementById("existing_stores").innerHTML = rows
-        } else {
-            // if the user doesn't own any store, go to the checkout creation page
-            document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
         }
     }
 }
@@ -337,7 +346,15 @@ function waitForPaymentContractDataLoaded() {
             }
         }
         console.log(sessionStorage['products'])
-        document.getElementById("content_card").innerHTML = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
+
+        pages_list = sessionStorage['navigation_history'].split(',')
+        current_page = pages_list[pages_list.length-1]
+        console.log('updating store page vs blockchain')
+        if (current_page=='/store'){
+            document.getElementById("content_card").innerHTML = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
+            sessionStorage['window_timestamp'] = window.location.href
+            setTimeout("getManageStorePage();", 2000);
+        }
     }
 }
 
@@ -349,9 +366,10 @@ function createPaymentContract() {
     web3.eth.defaultAccount = account;
     var FactoryContract = web3.eth.contract(FACTORY_ABI);
     var Factory = FactoryContract.at(FACTORY_CONTRACT);
-    tx_hash = Factory.newPaymentContract(account, function(error, result) {
+    Factory.newPaymentContract(account, function(error, result) {
         if (!error){
             console.log('Succesfully approved transaction to create a new payment contract');
+            console.log(result);
         } else {
             console.log('error');
         }
@@ -409,10 +427,20 @@ function saveProduct() {
     var PaymentContractInstance = PaymentContract.at(contract_address);
     PaymentContractInstance.createProduct(new_product_name, new_product_description, parseInt(new_product_price), function(err, data) {
         console.log("Transaction confirmed by the user and sent to the blockchain")
+        console.log(data);
     })
 
 }
 
+// strore transaction as it is transmitted
+function store_transaction(tx_type, tx_hash, account){
+    $.ajax({
+        url :'/store_transaction',
+        type : 'GET',
+        data : { tx_type : tx_type, tx_hash : tx_hash, account : account},
+        }).done(function(data) {
+        });
+}
 
 
 
