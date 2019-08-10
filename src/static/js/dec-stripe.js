@@ -9,9 +9,6 @@ $(document).ready(function () {
     if (localStorage['pending_transactions'] == undefined){
         localStorage['pending_transactions'] = JSON.stringify([])
     }
-    refreshPendingTransactions()
-
-
    
     if (window.location.href.indexOf("/store/") >= 0){
         // extract the parameters: address and (if present) pool
@@ -34,6 +31,7 @@ $(document).ready(function () {
         sessionStorage['navigation_history']=''
         changePage('/#')
     }
+    refreshPendingTransactions()
 });
 
 
