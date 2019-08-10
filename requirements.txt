@@ -1,0 +1,11 @@
+Flask==1.0.1
+pymongo==3.8.0
+
+requests==2.22.0
+
+uniswap-python==0.3.3
+passlib
+eventlet
+gunicorn
+flask-socketio
+gevent

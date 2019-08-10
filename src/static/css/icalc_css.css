@@ -1,0 +1,237 @@
+@font-face {
+   font-family: Avenir;
+   src: url('AvenirNextCyr-Regular.otf');
+}
+
+
+.top_bar {
+   background: rgb(15, 20, 25);
+   color: white;
+   font-weight: normal;
+   padding:10px;
+   height:280px auto;
+   text-align:center;
+}
+
+.top_bar_top_menu {
+   margin-top:15px; 
+   width:70%; 
+   position:relative; 
+   margin: 0 auto; 
+   color:rgb(220,220,220);
+}
+
+
+.three_boxes_ribbon {
+   margin-top:15px; 
+   width:70%; 
+   position:relative; 
+   margin: 0 auto;"
+}
+
+.insert_bar {
+   border-radius: 5px; 
+   height:105px; 
+   text-align:left; 
+   padding-top:15px;
+   padding-bottom:15px;
+   padding-left:25px; 
+   color:rgb(141,164,169);
+   background: background:rgb(85, 91, 99);
+   background: -webkit-linear-gradient(to left, rgb(45, 51, 59), rgb(65, 71, 79));
+   background: linear-gradient(to left, rgb(45, 51, 59), rgb(65, 71, 79));
+}
+
+.content_section {
+   width:70%; 
+   position:relative; 
+   margin: 0 auto; 
+   padding:10px
+}
+
+.content_section_panel{
+   border-radius:5px; 
+   padding:20px
+}
+
+
+
+
+  @media only screen 
+    and (max-device-width : 480px){ 
+     .desk {display: none;}
+     .top_bar {padding:5px;}
+     .top_bar_top_menu { width: 100%;}
+     .three_boxes_ribbon { width: 100%;}
+     .content_section { width: 100%; padding:0px;}
+     .content_section_panel { padding: 10px;}
+  }
+
+  @media only screen 
+    and (min-device-width : 480px)
+    and (max-device-width : 770px){ 
+     .mobi { display: none;}
+     .top_bar_top_menu { width: 100%;}
+     .three_boxes_ribbon { width: 100%;}
+     .content_section { width: 100%;}
+  }
+
+
+  @media only screen 
+    and (min-device-width : 770px){ 
+     .mobi { display: none;}
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+body {
+   background-color: rgb(247, 248, 250);
+    margin:0px;
+    padding:0px;
+}
+
+
+a:hover {
+  text-decoration: none;
+  color: white
+}
+
+a:link {
+  text-decoration: none;
+  color: rgb(220,220,220);
+}
+
+a:visited {
+  text-decoration: none;
+  color: rgb(220,220,220);
+}
+
+a:active {
+  text-decoration: none;
+  color: rgb(220,220,220);
+}
+
+
+.white-button {
+}
+
+.white-button:hover {
+   -moz-box-shadow: 0px 0px 8px 0px #ccc;
+   -webkit-box-shadow: 0px 0px 8px 0px #ccc;
+   box-shadow: 0px 0px 8px 0px #ccc;
+   color-grey;
+}
+
+.green-button {
+   background-color: rgb(95,189,255);
+   color: white;
+   border-radius: 5px;
+   /*height:500px;*/
+}
+
+.green-button:hover {
+   background: rgb(75,169,235);
+   color: white;
+}
+
+
+.radio-ask-button {
+   background-color: white;
+   color: grey;
+   border-color: rgb(75,169,235);
+   /*height:500px;*/
+}
+
+.radio-ask-button:hover {
+   background: rgb(75,169,235);
+   color: white;
+}
+
+
+
+
+.modal.modal-wide .modal-dialog {
+  width: 90%;
+}
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+
+.button-label{
+}
+
+.button-label:hover{
+   color: white
+}
+
+
+.shadow {
+   -moz-box-shadow: 0px 0px 8px 0px #ccc;
+   -webkit-box-shadow: 0px 0px 8px 0px #ccc;
+   box-shadow: 0px 0px 8px 0px #ccc;
+}
+
+.shadow-blue {
+   -moz-box-shadow: 0px 0px 8px 0px #3c7de6;
+   -webkit-box-shadow: 0px 0px 8px 0px #3c7de6;
+   box-shadow: 0px 0px 8px 0px #3c7de6;
+}
+
+.heavyshadow {
+   -moz-box-shadow: 0px 0px 10px 0px #ccc;
+   -webkit-box-shadow: 0px 0px 10px 0px #ccc;
+   box-shadow: 0px 0px 10px 5px #ccc;
+}
+
+
+
+.no-border {
+   border: 0;
+   box-shadow: none;
+   /* You may want to include this as bootstrap applies these styles too */
+}
+
+
+
+
+
+
+
+
+
+/* Tooltip CSS */
+.bs-example{
+	margin: 50px;
+}
+.bs-example a{
+    font-size: 22px;        
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+
+
+.slider-wrapper {
+  display: inline-block;
+  width: 20px;
+  height: 150px;
+  padding: 0;
+}
+
+.slider-wrapper input {
+  width: 150px;
+  height: 20px;
+  margin: 0;
+  transform-origin: 75px 75px;
+  transform: rotate(-90deg);
+}
