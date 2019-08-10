@@ -22,8 +22,8 @@ $(document).ready(function () {
         changePage('/store')
     } else if (window.location.href.indexOf("/allstores") >= 0) {
     connectWeb3()
-            sessionStorage['navigation_history']=''
-            changePage('/#')
+            sessionStorage['navigation_history']=',/#'
+            changePage('/allstores')
         
     } else {
     connectWeb3()
