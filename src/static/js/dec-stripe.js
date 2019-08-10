@@ -24,134 +24,231 @@ function getExistingCheckoutPage() {
 }
 
 
-function connectWeb3(){
+// initiate connetcion with web3 browser
+function connectWeb3() {
     if (typeof web3 !== 'undefined') {
-      web3Provider = web3.currentProvider
-      web3 = new Web3(web3.currentProvider)
+        web3Provider = web3.currentProvider
+        web3 = new Web3(web3.currentProvider)
     } else {
-      window.alert("Please connect to Metamask.")
+        window.alert("Please connect to Metamask or another web3 browser")
     }
     // Modern dapp browsers...
     if (window.ethereum) {
-      web3 = new Web3(ethereum)
-//      try {
+        web3 = new Web3(ethereum)
+
         // Request account access if needed
-        console.log("Asking connection to Metamask")
+        console.log("Asking connection to web3 browser")
         ethereum.enable()
         checkWeb3Connection()
-        
-        
-        // Acccounts now exposed
-        //web3.eth.sendTransaction({/* ... */})
-//      } catch (error) {
-//        // User denied account access...
-//        console.log("Error")
-//      }
+
     }
     // Legacy dapp browsers...
     else if (window.web3) {
-      web3Provider = web3.currentProvider
-      web3 = new Web3(web3.currentProvider)
-      // Acccounts always exposed
-      //web3.eth.sendTransaction({/* ... */})
+        web3Provider = web3.currentProvider
+        web3 = new Web3(web3.currentProvider)
+
     }
     // Non-dapp browsers...
     else {
-      console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
+        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
 }
 
-
-// wait for the user to connect to metamask
+// wait for the user to connect to a web3 browser
 function checkWeb3Connection() {
     var account = web3.eth.accounts[0];
     if (account == undefined) {
         setTimeout(checkWeb3Connection, 100)
         getStartedPage()
-        
+
     } else {
         sessionStorage['account_address'] = account
         console.log("web3 access granted on " + account)
-        document.getElementById("account_address").innerHTML = account.substring(0, 15)+"..."
-        
-        
+        document.getElementById("account_address").innerHTML = account.substring(0, 15) + "..."
         findStoresInBlockchain(account)
-    
     }
 }
 
 
-
-function findStoresInBlockchain(account){
-
-        web3.eth.defaultAccount = account;
-    var FactoryContract = web3.eth.contract(ABI);
+// download from the blockchain the records of all the stores that have been created
+// at the end, call the function waitForDbReady() to wait for all the responses to arrive from the blockchain and to be stored in the db
+function findStoresInBlockchain(account) {
+    web3.eth.defaultAccount = account;
+    var FactoryContract = web3.eth.contract(FACTORY_ABI);
     var Factory = FactoryContract.at(FACTORY_CONTRACT);
-        
-        // first, find the counter of payment contracts (stores) created
-       Factory.contractsCount.call(function(err, data) {
-       if (err) return console.log(err);
-       contracts_count = data['c'][0]
-       sessionStorage['contracts_count'] = contracts_count
-       console.log(contracts_count);
-       
-       
+
+    // first, find the counter of payment contracts (stores) created
+    Factory.contractsCount.call(function(err, data) {
+        if (err) return console.log(err);
+        contracts_count = data['c'][0]
+        sessionStorage['contracts_count'] = contracts_count
+        console.log(contracts_count);
+
         // then scan trhough the contract mapping and download the db of payment contracts created
-        sessionStorage['contracts'] = JSON.stringify([]) 
+        sessionStorage['contracts'] = JSON.stringify([])
         for (i = 0, len = contracts_count; i < len; i++) {
-           Factory.contracts.call(i, function(err, data) {
-           if (err) return console.log(err);
-           
-           contract = {'owner':data[1], 'contract_address':data[2]}
-           
-           full_data = JSON.parse(sessionStorage['contracts'])
-           full_data = $.merge(full_data, [contract]);
-           //console.log(full_data)
-           sessionStorage['contracts']=JSON.stringify(full_data)  
-           
+            Factory.contracts.call(i, function(err, data) {
+                if (err) return console.log(err);
+                contract = {
+                    'owner': data[1],
+                    'contract_address': data[2]
+                }
+              
+                full_data = JSON.parse(sessionStorage['contracts'])
+                full_data = $.merge(full_data, [contract]);
+                sessionStorage['contracts'] = JSON.stringify(full_data)
             });
         }
+        // once the for loop has iterated over all the store contracts, wait for all the responses to arrive
         waitForDbReady()
-       
-        });
-        
-
+    });
 }
 
-function waitForDbReady(){
-     account = sessionStorage['account_address']
+
+// wait for all the contract records to arrive so that the db of the stores is complete
+// once the db is completed, visualize the existing checkouts
+function waitForDbReady() {
+    account = sessionStorage['account_address']
     contracts = JSON.parse(sessionStorage['contracts'])
     contracts_count = sessionStorage['contracts_count']
     if (contracts.length != contracts_count) {
         setTimeout("waitForDbReady();", 100);
     } else {
+        // this means all the responses have been received and the db of the stores is ready
         console.log(contracts)
-        contracts_of_this_account=[]
+        contracts_of_this_account = []
+        // isolate the stores that are owned by the current user (account)
         for (i = 0, len = contracts.length; i < len; i++) {
-            if(contracts[i]['owner'] == account){
+            if (contracts[i]['owner'] == account) {
                 contracts_of_this_account = $.merge(contracts_of_this_account, [contracts[i]])
             }
         }
-
-        if (contracts_of_this_account.length>0) {
+        
+        if (contracts_of_this_account.length > 0) {
+            // if the user owns some existing stores, display them
             getExistingCheckoutPage()
-            rows=''
+            rows = ''
             for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
-                    rows = rows + '<a style="color:blue" href="">'+contracts_of_this_account[i]['contract_address']+'</a><br>'
-    
+                rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'])
             }
             document.getElementById("existing_stores").innerHTML = rows
         } else {
+            // if the user doesn't own any store, go to the checkout creation page
             getCreateCheckoutPage()
         }
     }
 }
 
 
+function queryPaymentContractOwner(account, contract_address) {
+    sessionStorage['payment_contract_owner'] = 'nodata'
+    web3.eth.defaultAccount = account;
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+
+    // query the blockchain for the owner of the contract
+    PaymentContractInstance.owner.call(function(err, data) {
+        if (err) return console.log(err);
+        sessionStorage['payment_contract_owner'] = data
+    });
+}
+
+function queryPaymentContractWallet(account, contract_address) {
+    sessionStorage['payment_contract_wallet'] = 'nodata'
+    web3.eth.defaultAccount = account;
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+
+    // query the blockchain for the payable wallet of the contract
+    PaymentContractInstance.wallet.call(function(err, data) {
+        if (err) return console.log(err);
+        sessionStorage['payment_contract_wallet'] = data
+    });
+}
+
+function queryPaymentContractProducts(account, contract_address) {
+    sessionStorage['payment_contract_products'] = 'nodata'
+    web3.eth.defaultAccount = account;
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+
+    // first query the blockchain for the number of products in the contract
+    PaymentContractInstance.productsCount.call(function(err, products_count) {
+        if (err) return console.log(err);
+        sessionStorage['products_count'] = products_count
+        
+        // then scan trhough the contract mapping and download the db of payment contracts created
+        sessionStorage['products'] = JSON.stringify([])
+        for (i = 0, len = products_count; i < len; i++) {
+            PaymentContractInstance.products.call(i, function(err, data) {
+                if (err) return console.log(err);
+                console.log(data)
+                product = {
+                    '_id': data[0]['e'],
+                    'name': data[1],
+                    'description': data[2],
+                    'priceInWei': data[3],
+                    'isactive': data[4]
+                }
+              
+                full_data = JSON.parse(sessionStorage['products'])
+                full_data = $.merge(full_data, [product]);
+                sessionStorage['products'] = JSON.stringify(full_data)
+            });
+        }
+        waitForProductsDbReady()
+    });
+}
+
+
+function waitForProductsDbReady() {
+    products = JSON.parse(sessionStorage['products'])
+    products_count = sessionStorage['products_count']
+    if (products.length != products_count) {
+        setTimeout("waitForProductsDbReady();", 100);
+    } else {
+        // this means all the responses have been received and the db of the products is ready
+        console.log(products)
+        sessionStorage['payment_contract_products'] = 'data_received'
+    }
+}
+
+
+function manageStore(data) {
+    contract_address = data.getAttribute("contract_address")
+    sessionStorage['contract_address'] = contract_address
+    account = sessionStorage['account']
+    queryPaymentContractOwner(account, contract_address)
+    queryPaymentContractWallet(account, contract_address)
+    queryPaymentContractProducts(account, contract_address)
+    waitForPaymentContractDataLoaded();
+}
+
+
+function waitForPaymentContractDataLoaded() {
+    if (sessionStorage['payment_contract_owner'] == 'nodata' || sessionStorage['payment_contract_wallet'] == 'nodata' || sessionStorage['payment_contract_products'] == 'nodata') {
+        setTimeout("waitForPaymentContractDataLoaded();", 100);
+    } else {
+        contract_address = sessionStorage['contract_address']
+        owner = sessionStorage['payment_contract_owner']
+        wallet = sessionStorage['payment_contract_wallet']
+        products = JSON.parse(sessionStorage['products'])
+        rows=''
+        for (i = 0, len = products.length; i < len; i++) {
+            rows = rows + document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{priceInWei}/g, products[i]['priceInWei']).replace(/{isactive}/g, products[i]['isactive'])
+        }
+        console.log(sessionStorage['products'])
+        document.getElementById("content_card").innerHTML = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
+    }
+}
+
+
+
+// function to create a new payment contract (i.e. a new store)
 function createPaymentContract() {
     account = sessionStorage['account_address']
     web3.eth.defaultAccount = account;
-    var FactoryContract = web3.eth.contract(ABI);
+    var FactoryContract = web3.eth.contract(FACTORY_ABI);
     var Factory = FactoryContract.at(FACTORY_CONTRACT);
     Factory.newPaymentContract(account, function(error, result) {
         if (!error)
@@ -1270,7 +1367,7 @@ function fingerprint_plugins() {
 FACTORY_CONTRACT="0xb256aa5db693b26c3cac56ac96077a4752a81a4d"
 
 
-ABI=[
+FACTORY_ABI=[
 	{
 		"constant": false,
 		"inputs": [
@@ -1346,6 +1443,310 @@ ABI=[
 		"constant": true,
 		"inputs": [],
 		"name": "fees_wallet",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+
+PAYMENTCONTRACT_ABI=[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_new_wallet",
+				"type": "address"
+			}
+		],
+		"name": "changeWallet",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_description",
+				"type": "string"
+			},
+			{
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "createProduct",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_description",
+				"type": "string"
+			}
+		],
+		"name": "editProductDescription",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "editProductName",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_priceInWei",
+				"type": "uint256"
+			}
+		],
+		"name": "editProductPrice",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_customer_id",
+				"type": "string"
+			},
+			{
+				"name": "_product_id",
+				"type": "uint256"
+			}
+		],
+		"name": "pay",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "removeProduct",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_fees_wallet",
+				"type": "address"
+			},
+			{
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "customer_id",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "product_id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "PaymentCompleted",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fees_wallet",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "payments",
+		"outputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "customer_id",
+				"type": "string"
+			},
+			{
+				"name": "product_id",
+				"type": "uint256"
+			},
+			{
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "paymentsCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "products",
+		"outputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"name": "priceInWei",
+				"type": "uint256"
+			},
+			{
+				"name": "isactive",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "productsCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "wallet",
 		"outputs": [
 			{
 				"name": "",

@@ -78,3 +78,52 @@
  <button type="button" class="btn green-button" onclick="createPaymentContract()">Create new store</button>
  </div>
 </script>
+
+<!-- EXISTING STORE ROW -->
+<script  id="existing_store_row" language="text">
+<span style="color:blue; cursor:pointer" onclick="manageStore(this)" contract_address="{contract_address}">{contract_address}</span><br>
+</script>
+
+
+
+<!-- MANAGE STORE PANEL -->
+<script  id="manage_store_panel_element" language="text">
+<span>Managing store: {contract_address}</span><br><br><br>
+<div class="row">
+<div class="col-sm-6"><span><strong>Owner:</strong></span></div>
+<div class="col-sm-6"><span>{owner}</span></div>
+<br><br>
+<div class="col-sm-6"><span><strong>Wallet:</strong></span></div>
+<div class="col-sm-6"><span>{wallet}</span></div>
+<br><br>
+<div class="col-sm-6"><span><strong>Products:</strong></span></div>
+<div class="col-sm-6"><span>{products_rows}</span></div>
+</div>
+</script>
+
+<!-- PRODUCT ROW -->
+<script  id="product_row" language="text">
+<div class="shadow" style="padding:10px; border-radius: 5px; ">
+<table class="table" style="font-size:10pt; text-align:center">
+   <tbody>
+<tr>
+   <td style="text-align:left; width:30%">Name: </td>
+    <td style="text-align:left">{name}</td>
+</tr>
+<tr>
+   <td style="text-align:left">Description: </td>
+    <td style="text-align:left">{description}</td>
+</tr>
+<tr>
+   <td style="text-align:left">Price: </td>
+    <td style="text-align:left">{priceInWei}</td>
+</tr>
+<tr>
+   <td style="text-align:left">Active: </td>
+    <td style="text-align:left">{isactive}</td>
+</tr>
+   </tbody>
+</table>
+</div>
+<br>
+</script>
