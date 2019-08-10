@@ -264,7 +264,7 @@ function createPaymentContract() {
 
 // function to delete a product from the store
 function deleteProduct(data) {
-    contract_address = data.getAttribute("contract_address")
+    account = sessionStorage['account_address']
     account = sessionStorage['account_address']
     web3.eth.defaultAccount = account;
     product_id = data.getAttribute("product_id")
@@ -299,8 +299,8 @@ function updateProductPrice(user_input){
 
 
 // function to save a new product in the store
-function saveProduct(data) {
-    contract_address = data.getAttribute("contract_address")
+function saveProduct() {
+    account = sessionStorage['account_address']
     account = sessionStorage['account_address']
     web3.eth.defaultAccount = account;
     new_product_name = sessionStorage['new_product_name']
