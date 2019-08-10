@@ -11,6 +11,7 @@ $(document).ready(function () {
    
     if (window.location.href.indexOf("/store/") >= 0){
         // extract the parameters: address and (if present) pool
+        connectWeb3()
         metadata = window.location.href.slice(window.location.href.indexOf("/store/")+7 , window.location.href.lenght)
         contract_address = metadata
         console.log('enetered direct store')
@@ -20,10 +21,12 @@ $(document).ready(function () {
         sessionStorage['navigation_history']=',/#,/allstores'
         changePage('/store')
     } else if (window.location.href.indexOf("/allstores") >= 0) {
+    connectWeb3()
             sessionStorage['navigation_history']=''
             changePage('/#')
         
     } else {
+    connectWeb3()
         sessionStorage['navigation_history']=''
         changePage('/#')
     }
@@ -145,7 +148,13 @@ function checkWeb3Connection() {
         sessionStorage['account_address'] = account
         console.log("web3 access granted on " + account)
         document.getElementById("account_address").innerHTML = account.substring(0, 15) + "..."
-        changePage('/allstores')
+        pages_list = sessionStorage['navigation_history'].split(',')
+        current_page = pages_list[pages_list.length-1]
+        if(current_page=='/#' || current_page=='/') {
+            changePage('/allstores')
+        } else {
+            // dont change the page
+        }
     }
 }
 
