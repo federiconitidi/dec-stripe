@@ -12,7 +12,6 @@ $(document).ready(function () {
    
     if (window.location.href.indexOf("/store/") >= 0){
         // extract the parameters: address and (if present) pool
-        connectWeb3()
         metadata = window.location.href.slice(window.location.href.indexOf("/store/")+7 , window.location.href.lenght)
         contract_address = metadata
         console.log('enetered direct store')
@@ -20,6 +19,7 @@ $(document).ready(function () {
         // go to the store page
         sessionStorage['contract_address'] = contract_address
         sessionStorage['navigation_history']=',/#,/allstores'
+        connectWeb3()
         changePage('/store')
     } else if (window.location.href.indexOf("/allstores") >= 0) {
     connectWeb3()
