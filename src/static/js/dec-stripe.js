@@ -184,7 +184,7 @@ function queryPaymentContractProducts(account, contract_address) {
                 if (err) return console.log(err);
                 console.log(data)
                 product = {
-                    '_id': data[0]['e'],
+                    '_id': data[0]['c'][0],
                     'name': data[1],
                     'description': data[2],
                     'priceInWei': data[3],
@@ -226,6 +226,7 @@ function manageStore(data) {
 
 
 function waitForPaymentContractDataLoaded() {
+    contract_address = sessionStorage['contract_address']
     if (sessionStorage['payment_contract_owner'] == 'nodata' || sessionStorage['payment_contract_wallet'] == 'nodata' || sessionStorage['payment_contract_products'] == 'nodata') {
         setTimeout("waitForPaymentContractDataLoaded();", 100);
     } else {
@@ -235,7 +236,9 @@ function waitForPaymentContractDataLoaded() {
         products = JSON.parse(sessionStorage['products'])
         rows=''
         for (i = 0, len = products.length; i < len; i++) {
-            rows = rows + document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{priceInWei}/g, products[i]['priceInWei']).replace(/{isactive}/g, products[i]['isactive'])
+            if(products[i]['isactive']==true){
+                rows = rows + document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{priceInWei}/g, products[i]['priceInWei']).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
+            }
         }
         console.log(sessionStorage['products'])
         document.getElementById("content_card").innerHTML = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
@@ -257,6 +260,61 @@ function createPaymentContract() {
             console.log('error');
     });
 }
+
+
+// function to delete a product from the store
+function deleteProduct(data) {
+    contract_address = data.getAttribute("contract_address")
+    account = sessionStorage['account_address']
+    web3.eth.defaultAccount = account;
+    product_id = data.getAttribute("product_id")
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+    PaymentContractInstance.removeProduct(parseInt(product_id), function(err, data) {
+        console.log(data)
+    })
+}
+
+
+
+function createProduct(){
+    $(create_product_modal).modal('show');
+}
+
+// Temporarily save the new product name
+function updateProductName(user_input){
+    sessionStorage['new_product_name']=user_input.value
+}
+
+// Temporarily save the new product description
+function updateProductDescription(user_input){
+    sessionStorage['new_product_description']=user_input.value
+}
+
+// Temporarily save the new product price
+function updateProductPrice(user_input){
+    sessionStorage['new_product_price']=user_input.value
+}
+
+
+
+// function to save a new product in the store
+function saveProduct(data) {
+    contract_address = data.getAttribute("contract_address")
+    account = sessionStorage['account_address']
+    web3.eth.defaultAccount = account;
+    new_product_name = sessionStorage['new_product_name']
+    new_product_description = sessionStorage['new_product_description']
+    new_product_price = sessionStorage['new_product_price']
+    
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+    PaymentContractInstance.createProduct(new_product_name, new_product_description, parseInt(new_product_price), function(err, data) {
+        console.log(data)
+    })
+}
+
+
 
 
 
