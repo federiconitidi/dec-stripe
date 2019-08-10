@@ -349,12 +349,14 @@ function createPaymentContract() {
     web3.eth.defaultAccount = account;
     var FactoryContract = web3.eth.contract(FACTORY_ABI);
     var Factory = FactoryContract.at(FACTORY_CONTRACT);
-    Factory.newPaymentContract(account, function(error, result) {
-        if (!error)
+    tx_hash = Factory.newPaymentContract(account, function(error, result) {
+        if (!error){
             console.log('Succesfully approved transaction to create a new payment contract');
-        else
+        } else {
             console.log('error');
+        }
     });
+
 }
 
 
@@ -406,9 +408,11 @@ function saveProduct() {
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
     PaymentContractInstance.createProduct(new_product_name, new_product_description, parseInt(new_product_price), function(err, data) {
-        console.log(data)
+        console.log("Transaction confirmed by the user and sent to the blockchain")
     })
+
 }
+
 
 
 
@@ -1518,7 +1522,7 @@ function fingerprint_plugins() {
 
 
 
-FACTORY_CONTRACT="0xb256aa5db693b26c3cac56ac96077a4752a81a4d"
+FACTORY_CONTRACT="0x587c8e87704d3788374eb96be903ebb2b0d130d8"
 
 
 FACTORY_ABI=[
@@ -1551,6 +1555,18 @@ FACTORY_ABI=[
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "newPaymentContractDeployed",
+		"type": "event"
 	},
 	{
 		"constant": true,
@@ -1610,7 +1626,161 @@ FACTORY_ABI=[
 ]
 
 
+
+
 PAYMENTCONTRACT_ABI=[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_description",
+				"type": "string"
+			},
+			{
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "editProduct",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "wallet",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "removeProduct",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "products",
+		"outputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"name": "priceInWei",
+				"type": "uint256"
+			},
+			{
+				"name": "isactive",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "payments",
+		"outputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "customer_id",
+				"type": "string"
+			},
+			{
+				"name": "product_id",
+				"type": "uint256"
+			},
+			{
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_customer_id",
+				"type": "string"
+			},
+			{
+				"name": "_product_id",
+				"type": "uint256"
+			}
+		],
+		"name": "pay",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
 	{
 		"constant": false,
 		"inputs": [
@@ -1648,89 +1818,45 @@ PAYMENTCONTRACT_ABI=[
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "paymentsCount",
+		"outputs": [
 			{
-				"name": "_id",
+				"name": "",
 				"type": "uint256"
-			},
-			{
-				"name": "_description",
-				"type": "string"
 			}
 		],
-		"name": "editProductDescription",
-		"outputs": [],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "fees_wallet",
+		"outputs": [
 			{
-				"name": "_id",
-				"type": "uint256"
-			},
-			{
-				"name": "_name",
-				"type": "string"
+				"name": "",
+				"type": "address"
 			}
 		],
-		"name": "editProductName",
-		"outputs": [],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "productsCount",
+		"outputs": [
 			{
-				"name": "_id",
-				"type": "uint256"
-			},
-			{
-				"name": "_priceInWei",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "editProductPrice",
-		"outputs": [],
 		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_customer_id",
-				"type": "string"
-			},
-			{
-				"name": "_product_id",
-				"type": "uint256"
-			}
-		],
-		"name": "pay",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_id",
-				"type": "uint256"
-			}
-		],
-		"name": "removeProduct",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1774,141 +1900,5 @@ PAYMENTCONTRACT_ABI=[
 		],
 		"name": "PaymentCompleted",
 		"type": "event"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "fees_wallet",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "payments",
-		"outputs": [
-			{
-				"name": "_id",
-				"type": "uint256"
-			},
-			{
-				"name": "customer_id",
-				"type": "string"
-			},
-			{
-				"name": "product_id",
-				"type": "uint256"
-			},
-			{
-				"name": "sender",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "paymentsCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "products",
-		"outputs": [
-			{
-				"name": "_id",
-				"type": "uint256"
-			},
-			{
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"name": "priceInWei",
-				"type": "uint256"
-			},
-			{
-				"name": "isactive",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "productsCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "wallet",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
 	}
 ]

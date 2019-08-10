@@ -2,24 +2,31 @@ pragma solidity ^0.5.1;
 
 contract Factory {
     address payable public fees_wallet;
-    // index of created contracts
-    address[] public contracts;
 
+    uint public contractsCount=0; 
+    mapping(uint => PaymentContractRecord) public contracts;
+    struct PaymentContractRecord {
+        uint _id;
+        address owner;
+        address contract_address;
+    }
+    
+    event newPaymentContractDeployed(
+        address payable _owner
+	);
+	  
     // constructor
     constructor(address payable _fees_wallet) public {
         fees_wallet = _fees_wallet;
     }
 
-    // useful to know the row count in contracts index
-    function getContractCount() view public returns(uint) {
-        return contracts.length;
-    }
-
     // deploy a new contract
     function newPaymentContract(address payable _owner) public returns(PaymentContract) {
         PaymentContract c = new PaymentContract( fees_wallet, _owner);
-        contracts.push(address(c));
+        contracts[contractsCount] = PaymentContractRecord(contractsCount, _owner, address(c));
+        contractsCount ++;
         return c;
+        emit newPaymentContractDeployed(_owner);
     }
 }
 
@@ -77,21 +84,13 @@ contract PaymentContract {
         products[_id].isactive = false;
     }
 
-    // edit product name
-    function editProductName(uint _id, string memory _name) public onlyOwner {
+    // edit product 
+    function editProduct(uint _id, string memory _name, string memory _description, uint _price ) public onlyOwner {
         products[_id].name = _name;
-    }
-
-    // edit product description
-    function editProductDescription(uint _id, string memory _description) public onlyOwner {
         products[_id].description = _description;
+        products[_id].priceInWei = _price;
     }
 
-    // edit product price
-    function editProductPrice(uint _id, uint _priceInWei) public onlyOwner {
-        products[_id].priceInWei = _priceInWei;
-    }
-    
     event PaymentCompleted(
         uint _id,
         string customer_id,
