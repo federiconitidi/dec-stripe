@@ -6,8 +6,6 @@ buy_modal ='<div style="color:black" class="modal fade" id="pay_preview_modal" t
 pay_button_element = '<button type="button" class="btn green-button" product_id="{product_id}" contract_address="{contract_address}" customer_id="{customer_id}" onclick="connectWeb3andPay(this)">Buy now</button>'
 
 
-// load stylesheets we need
-document.head.append('<script src="/static/js/web3/web3.js"></script>');
 
 
 // fetch the parameters sent long with the script request
