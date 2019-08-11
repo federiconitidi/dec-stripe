@@ -101,14 +101,14 @@
 <script  id="manage_store_panel_element" language="text">
 <span>Managing store: {contract_address}</span><br><br><br>
 <div class="row">
-<div class="col-sm-6"><span><strong>Owner:</strong></span></div>
-<div class="col-sm-6"><span>{owner}</span></div>
+<div class="col-sm-3"><span><strong>Owner:</strong></span></div>
+<div class="col-sm-9"><span>{owner}</span></div>
 <br><br>
-<div class="col-sm-6"><span><strong>Wallet:</strong></span></div>
-<div class="col-sm-6"><span>{wallet}</span></div>
+<div class="col-sm-3"><span><strong>Wallet:</strong></span></div>
+<div class="col-sm-9"><span>{wallet}</span></div>
 <br><br>
-<div class="col-sm-6"><span><strong>Products:</strong></span></div>
-<div class="col-sm-6">
+<div class="col-sm-3"><span><strong>Products:</strong></span></div>
+<div class="col-sm-9">
 <div style="text-align:right">
 {loading} <button type="button" class="btn green-button" onclick="createProduct()">Create product</button>
  </div>
@@ -116,9 +116,9 @@
 <span>{products_rows}</span>
 </div>
 <br><br>
-<div class="col-sm-6"><span><strong>Orders:</strong></span></div>
-<div class="col-sm-6">
-<span>{orders_rows}</span>
+<div class="col-sm-3"><span><strong>Orders:</strong></span></div>
+<div class="col-sm-9">
+<span>{payments_rows}</span>
 </div>
 
 </div>
@@ -160,12 +160,15 @@
 </script>
 
 
-<!-- PRODUCT ROW -->
-<script  id="product_row" language="text">
+<!-- PAYMENT ROW -->
+<script  id="payment_row" language="text">
 <div class="shadow" style="padding:10px; border-radius: 5px; ">
-<span>Customer id: </span>
-<span>Product id: </span>
-<span>Customer id: </span>
+<span><strong>Timestamp:</strong></span> <span>{timestamp}</span><br>
+<span><strong>Customer id:</strong></span> <span>{customer_id}</span><br>
+<span><strong>Product name:</strong></span> <span>{product_name}</span><br>
+<span><strong>Product id:</strong></span> <span>{product_id}</span><br>
+<span><strong>Price paid:</strong></span> <span>{price_paid}</span><br>
+<span><strong>Sender:</strong></span> <span>{sender}</span><br>
 </div>
 <br>
 </script>
@@ -209,9 +212,9 @@
 </div>  
 
 
-<!-- CREATE PRODUCT PANEL ELEMENT --> 
+<!-- PAY ELEMENT --> 
 <div class="modal fade" id="pay_preview_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
+   <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content" style="padding:20px">
          <h5 id="pay_product_name" class="modal-title" style="text-align:center"></h5>
          <br><br>       

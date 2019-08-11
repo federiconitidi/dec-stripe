@@ -360,6 +360,54 @@ function queryPaymentContractProducts(account, contract_address) {
 }
 
 
+function queryPaymentContractPayments(account, contract_address) {
+    sessionStorage['payment_contract_payments'] = 'nodata'
+    web3.eth.defaultAccount = account;
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+
+    // first query the blockchain for the number of products in the contract
+    PaymentContractInstance.paymentsCount.call(function(err, payments_count) {
+        if (err) return console.log(err);
+        sessionStorage['payments_count'] = payments_count
+        
+        // then scan trhough the contract mapping and download the db of payment contracts created
+        sessionStorage['payments'] = JSON.stringify([])
+        for (i = 0, len = payments_count; i < len; i++) {
+            PaymentContractInstance.payments.call(i, function(err, data) {
+                if (err) return console.log(err);
+                console.log(data)
+                payment = {
+                    '_id': data[0]['c'][0],
+                    'customer_id': data[1],
+                    'product_id': data[2],
+                    'product_name': data[3],
+                    'price_paid': data[4],
+                    'sender': data[5],
+                    'timestamp': data[6]
+                }
+              
+                full_data = JSON.parse(sessionStorage['payments'])
+                full_data = $.merge(full_data, [payment]);
+                sessionStorage['payments'] = JSON.stringify(full_data)
+            });
+        }
+        waitForPaymentsDbReady()
+    });
+}
+
+function waitForPaymentsDbReady() {
+    payments = JSON.parse(sessionStorage['payments'])
+    payments_count = sessionStorage['payments_count']
+    if (payments.length != payments_count) {
+        setTimeout("waitForPaymentsDbReady();", 100);
+    } else {
+        // this means all the responses have been received and the db of the payments is ready
+        console.log(payments)
+        sessionStorage['payment_contract_payments'] = 'data_received'
+    }
+}
+
 function waitForProductsDbReady() {
     products = JSON.parse(sessionStorage['products'])
     products_count = sessionStorage['products_count']
@@ -384,6 +432,7 @@ function getManageStorePage() {
     queryPaymentContractOwner(account, contract_address)
     queryPaymentContractWallet(account, contract_address)
     queryPaymentContractProducts(account, contract_address)
+    queryPaymentContractPayments(account, contract_address)
     waitForPaymentContractDataLoaded()
 }
 
@@ -391,7 +440,7 @@ function getManageStorePage() {
 
 function waitForPaymentContractDataLoaded() {
     contract_address = sessionStorage['contract_address']
-    if (sessionStorage['payment_contract_owner'] == 'nodata' || sessionStorage['payment_contract_wallet'] == 'nodata' || sessionStorage['payment_contract_products'] == 'nodata') {
+    if (sessionStorage['payment_contract_owner'] == 'nodata' || sessionStorage['payment_contract_wallet'] == 'nodata' || sessionStorage['payment_contract_products'] == 'nodata' || sessionStorage['payment_contract_payments'] == 'nodata') {
         setTimeout("waitForPaymentContractDataLoaded();", 100);
     } else {
         contract_address = sessionStorage['contract_address']
@@ -400,10 +449,10 @@ function waitForPaymentContractDataLoaded() {
         products = JSON.parse(sessionStorage['products'])
         products.sort(function(first, second) {return second._id - first._id})
         
-        rows=''
+        products_rows=''
         for (i = 0, len = products.length; i < len; i++) {
             if(products[i]['isactive']==true){
-                row = document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{price}/g, products[i]['priceInWei'] / Math.pow(10, 19)).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
+                row = document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{price}/g, products[i]['priceInWei'] / Math.pow(10, 18)).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
 
                 // check if there are transactions in progress for deleting product
                 pending_contracts_of_this_product = []
@@ -420,15 +469,25 @@ function waitForPaymentContractDataLoaded() {
                     row = row.replace(/{loading_delete_product}/g, '').replace(/{delete_function}/g, 'deleteProduct(this)')
                 }
                 
-                rows = rows + row     
+                products_rows = products_rows + row     
   
             }
-
-            
         }
         console.log(sessionStorage['products'])
         
-        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
+        // now lets display the payments processed
+        payments = JSON.parse(sessionStorage['payments'])
+        payments.sort(function(first, second) {return second._id - first._id})
+        
+        payments_rows=''
+        for (i = 0, len = payments.length; i < len; i++) {
+                payments_rows = payments_rows + document.getElementById("payment_row").innerHTML.replace(/{customer_id}/g, payments[i]['customer_id']).replace(/{product_id}/g, payments[i]['product_id']).replace(/{product_name}/g, payments[i]['product_name']).replace(/{price_paid}/g, (payments[i]['price_paid']/ Math.pow(10, 18)).toString()+' ETH').replace(/{timestamp}/g, payments[i]['timestamp']).replace(/{sender}/g, payments[i]['sender'])
+ 
+        }
+        console.log(sessionStorage['payments'])
+        
+
+        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, products_rows).replace(/{payments_rows}/g, payments_rows)
 
         // check if there are transactions in progress for creating a new product
         pending_contracts_of_this_account = []
@@ -517,15 +576,18 @@ function payPreview(data){
         }
     }
 
+    // generate a random customer id
+    customer_id = 'customer_' + (Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()
+    
     document.getElementById("pay_product_name").innerHTML = 'Buy ' + product_to_display['name']
     document.getElementById("pay_product_description").innerHTML = product_to_display['description']
-    document.getElementById("pay_product_priceInEth").innerHTML = (product_to_display['priceInWei']/ Math.pow(10, 19)).toString() + ' ETH'
+    document.getElementById("pay_product_priceInEth").innerHTML = (product_to_display['priceInWei']/ Math.pow(10, 18)).toString() + ' ETH'
     document.getElementById("pay_product_priceInWei").innerHTML = product_to_display['priceInWei'].toString() + ' Wei'
-    document.getElementById("pay_product_pay_button").innerHTML = 'Pay ' + (product_to_display['priceInWei']/ Math.pow(10, 19)).toString() + ' ETH'
+    document.getElementById("pay_product_pay_button").innerHTML = 'Pay ' + (product_to_display['priceInWei']/ Math.pow(10, 18)).toString() + ' ETH'
     $(pay_product_pay_button).attr("product_id" , product_to_display['_id'])
     $(pay_product_pay_button).attr("contract_address" , sessionStorage['contract_address'])
     $(pay_product_pay_button).attr("priceInWei" , product_to_display['priceInWei'])
-    $(pay_product_pay_button).attr("customer_id" , "test_customer_id12345")
+    $(pay_product_pay_button).attr("customer_id" , customer_id)
     $(pay_product_pay_button).attr("account_address" , sessionStorage['account_address'])
         
     $(pay_preview_modal).modal('show');
@@ -591,7 +653,7 @@ function saveProduct() {
     
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
-    PaymentContractInstance.createProduct(new_product_name, new_product_description, new_product_price * Math.pow(10, 19), function(error, result) {
+    PaymentContractInstance.createProduct(new_product_name, new_product_description, new_product_price * Math.pow(10, 18), function(error, result) {
         if (!error){
             console.log('Succesfully approved transaction to create a new product');
             console.log(result);
