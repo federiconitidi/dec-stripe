@@ -27,6 +27,10 @@ app.secret_key='Federico'
 def index():
     return render_template('frontend.html')
 
+@app.route('/test/')
+def test():
+    return render_template('test.html')
+
 @app.route('/store/<string:metadata>')
 def bla(metadata):
     return render_template('frontend.html')
