@@ -415,9 +415,9 @@ function waitForPaymentContractDataLoaded() {
                 }
                 // if there is transaction to create a new product, show the loading gif next to the new product button
                 if (pending_contracts_of_this_product.length > 0) {
-                    row = row.replace(/{loading_delete_product}/g, '<img  style="height:20px" src="/static/img/loading.gif"/>')
+                    row = row.replace(/{loading_delete_product}/g, '<img  style="height:20px" src="/static/img/loading.gif"/>').replace(/{delete_function}/g, '')
                 } else {
-                    row = row.replace(/{loading_delete_product}/g, '')
+                    row = row.replace(/{loading_delete_product}/g, '').replace(/{delete_function}/g, 'deleteProduct(this)')
                 }
                 
                 rows = rows + row     
