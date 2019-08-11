@@ -1723,7 +1723,7 @@ function fingerprint_plugins() {
 
 
 
-FACTORY_CONTRACT="0x587c8e87704d3788374eb96be903ebb2b0d130d8"
+FACTORY_CONTRACT="0x6f66afd0850774ab1a4780abdad5881f59bd56be"
 
 
 FACTORY_ABI=[
@@ -1756,18 +1756,6 @@ FACTORY_ABI=[
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_owner",
-				"type": "address"
-			}
-		],
-		"name": "newPaymentContractDeployed",
-		"type": "event"
 	},
 	{
 		"constant": true,
@@ -1942,8 +1930,20 @@ PAYMENTCONTRACT_ABI=[
 				"type": "uint256"
 			},
 			{
+				"name": "product_name",
+				"type": "string"
+			},
+			{
+				"name": "price_paid",
+				"type": "uint256"
+			},
+			{
 				"name": "sender",
 				"type": "address"
+			},
+			{
+				"name": "timestamp",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -2074,32 +2074,5 @@ PAYMENTCONTRACT_ABI=[
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "customer_id",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"name": "product_id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "sender",
-				"type": "address"
-			}
-		],
-		"name": "PaymentCompleted",
-		"type": "event"
 	}
 ]
