@@ -110,7 +110,7 @@
 <div class="col-sm-6"><span><strong>Products:</strong></span></div>
 <div class="col-sm-6">
 <div style="text-align:right">
- <button type="button" class="btn green-button" onclick="createProduct()">Create product</button>
+{loading} <button type="button" class="btn green-button" onclick="createProduct()">Create product</button>
  </div>
  <br>
 <span>{products_rows}</span>
@@ -148,7 +148,7 @@
    </tbody>
 </table>
 <div style="text-align:right">
- <button type="button" class="btn green-button">Edit</button> <button type="button" class="btn" contract_address="{contract_address}" product_id="{_id}" onclick="deleteProduct(this)">Delete</button>
+ {loading_delete_product} <button type="button" class="btn" contract_address="{contract_address}" product_id="{_id}" onclick="deleteProduct(this)">Delete</button>
  </div>
 </div>
 <br>

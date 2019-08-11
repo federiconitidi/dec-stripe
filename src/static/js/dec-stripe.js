@@ -215,15 +215,17 @@ function waitForDbReady() {
                 contracts_of_this_account = $.merge(contracts_of_this_account, [contracts[i]])
             }
         }
+        contracts_of_this_account.sort(function(first, second) {return second.contract_address - first.contract_address})
         
         // check if there are transactions in progress for creating a new payment contract
         pending_contracts_of_this_account = []
         full_data = JSON.parse(localStorage['pending_transactions'])
         for (i = 0, len = full_data.length; i < len; i++) {
-            if (full_data[i]['type'] == 'createPaymentContract') {
+            if (full_data[i]['type'] == 'createPaymentContract' && full_data[i]['account'] == sessionStorage['account_address']) {
                 pending_contracts_of_this_account = $.merge(pending_contracts_of_this_account, [full_data[i]])
             }
         }
+        pending_contracts_of_this_account.sort(function(first, second) {return second.hash - first.hash})
         
         pages_list = sessionStorage['navigation_history'].split(',')
         current_page = pages_list[pages_list.length-1]
@@ -396,19 +398,59 @@ function waitForPaymentContractDataLoaded() {
         owner = sessionStorage['payment_contract_owner']
         wallet = sessionStorage['payment_contract_wallet']
         products = JSON.parse(sessionStorage['products'])
+        products.sort(function(first, second) {return second._id - first._id})
+        
         rows=''
         for (i = 0, len = products.length; i < len; i++) {
             if(products[i]['isactive']==true){
-                rows = rows + document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{priceInWei}/g, products[i]['priceInWei']).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
+                row = document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{priceInWei}/g, products[i]['priceInWei']).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
+
+                // check if there are transactions in progress for deleting product
+                pending_contracts_of_this_product = []
+                full_data = JSON.parse(localStorage['pending_transactions'])
+                for (j = 0, len1 = full_data.length; j < len1; j++) {
+                    if (full_data[j]['type'] == 'deleteProduct' && full_data[j]['account'] == sessionStorage['account_address'] && full_data[j]['metadata'] == sessionStorage['contract_address'] + products[i]['_id']) {
+                        pending_contracts_of_this_product = $.merge(pending_contracts_of_this_product, [full_data[j]])
+                    }
+                }
+                // if there is transaction to create a new product, show the loading gif next to the new product button
+                if (pending_contracts_of_this_product.length > 0) {
+                    row = row.replace(/{loading_delete_product}/g, '<img  style="height:20px" src="/static/img/loading.gif"/>')
+                } else {
+                    row = row.replace(/{loading_delete_product}/g, '')
+                }
+                
+                rows = rows + row     
+  
             }
+
+            
         }
         console.log(sessionStorage['products'])
+        
+        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
+
+        // check if there are transactions in progress for creating a new product
+        pending_contracts_of_this_account = []
+        full_data = JSON.parse(localStorage['pending_transactions'])
+        for (i = 0, len = full_data.length; i < len; i++) {
+            if (full_data[i]['type'] == 'createProduct' && full_data[i]['account'] == sessionStorage['account_address'] && full_data[i]['metadata'] == sessionStorage['contract_address']) {
+                pending_contracts_of_this_account = $.merge(pending_contracts_of_this_account, [full_data[i]])
+            }
+        }
+        // if there is transaction to create a new product, show the loading gif next to the new product button
+        if (pending_contracts_of_this_account.length > 0) {
+            content = content.replace(/{loading}/g, '<img  style="height:20px" src="/static/img/loading.gif"/>')
+        } else {
+            content = content.replace(/{loading}/g, '')
+        }
+       
 
         pages_list = sessionStorage['navigation_history'].split(',')
         current_page = pages_list[pages_list.length-1]
         console.log('updating store page vs blockchain')
         if (current_page=='/store'){
-            document.getElementById("content_card").innerHTML = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, rows)
+            document.getElementById("content_card").innerHTML = content
             sessionStorage['window_timestamp'] = window.location.href
             setTimeout("getManageStorePage();", 2000);
         }
@@ -428,7 +470,7 @@ function createPaymentContract() {
             console.log('Succesfully approved transaction to create a new payment contract');
             console.log(result);
             full_data = JSON.parse(localStorage['pending_transactions'])
-            full_data = $.merge(full_data, [{'type' : 'createPaymentContract', 'hash' : result, 'status' : 'pending'}]);
+            full_data = $.merge(full_data, [{'type' : 'createPaymentContract', 'hash' : result, 'status' : 'pending', 'metadata' : '', 'account' : sessionStorage['account_address']}]);
             localStorage['pending_transactions'] = JSON.stringify(full_data)
         } else {
             console.log('error');
@@ -441,14 +483,22 @@ function createPaymentContract() {
 // function to delete a product from the store
 function deleteProduct(data) {
     account = sessionStorage['account_address']
-    account = sessionStorage['account_address']
     web3.eth.defaultAccount = account;
     product_id = data.getAttribute("product_id")
+    sessionStorage['product_id'] = product_id
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
-    PaymentContractInstance.removeProduct(parseInt(product_id), function(err, data) {
-        console.log(data)
-    })
+    PaymentContractInstance.removeProduct(parseInt(product_id), function(error, result) {
+        if (!error){
+            console.log('Succesfully approved transaction to delete a product');
+            console.log(result);
+            full_data = JSON.parse(localStorage['pending_transactions'])
+            full_data = $.merge(full_data, [{'type' : 'deleteProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'] + sessionStorage['product_id'], 'account' : sessionStorage['account_address']}]);
+            localStorage['pending_transactions'] = JSON.stringify(full_data)
+        } else {
+            console.log('error');
+        }
+    });
 }
 
 
@@ -477,7 +527,6 @@ function updateProductPrice(user_input){
 // function to save a new product in the store
 function saveProduct() {
     account = sessionStorage['account_address']
-    account = sessionStorage['account_address']
     web3.eth.defaultAccount = account;
     new_product_name = sessionStorage['new_product_name']
     new_product_description = sessionStorage['new_product_description']
@@ -485,10 +534,17 @@ function saveProduct() {
     
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
-    PaymentContractInstance.createProduct(new_product_name, new_product_description, parseInt(new_product_price), function(err, data) {
-        console.log("Transaction confirmed by the user and sent to the blockchain")
-        console.log(data);
-    })
+    PaymentContractInstance.createProduct(new_product_name, new_product_description, parseInt(new_product_price), function(error, result) {
+        if (!error){
+            console.log('Succesfully approved transaction to create a new product');
+            console.log(result);
+            full_data = JSON.parse(localStorage['pending_transactions'])
+            full_data = $.merge(full_data, [{'type' : 'createProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'], 'account' : sessionStorage['account_address']}]);
+            localStorage['pending_transactions'] = JSON.stringify(full_data)
+        } else {
+            console.log('error');
+        }
+    });
 
 }
 
