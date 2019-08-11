@@ -403,7 +403,7 @@ function waitForPaymentContractDataLoaded() {
         rows=''
         for (i = 0, len = products.length; i < len; i++) {
             if(products[i]['isactive']==true){
-                row = document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{priceInWei}/g, products[i]['priceInWei']).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
+                row = document.getElementById("product_row").innerHTML.replace(/{name}/g, products[i]['name']).replace(/{description}/g, products[i]['description']).replace(/{price}/g, products[i]['priceInWei'] / Math.pow(10, 19)).replace(/{isactive}/g, products[i]['isactive']).replace(/{_id}/g, products[i]['_id']).replace(/{contract_address}/g, contract_address)
 
                 // check if there are transactions in progress for deleting product
                 pending_contracts_of_this_product = []
@@ -507,6 +507,63 @@ function createProduct(){
     $(create_product_modal).modal('show');
 }
 
+function payPreview(data){
+    product_id = data.getAttribute("product_id")
+    products = JSON.parse(sessionStorage['products'])
+    product_to_display = {}
+    for (i = 0, len = products.length; i < len; i++) {
+        if(products[i]['_id']==parseInt(product_id)){
+            product_to_display = products[i]
+        }
+    }
+
+    document.getElementById("pay_product_name").innerHTML = 'Buy ' + product_to_display['name']
+    document.getElementById("pay_product_description").innerHTML = product_to_display['description']
+    document.getElementById("pay_product_priceInEth").innerHTML = (product_to_display['priceInWei']/ Math.pow(10, 19)).toString() + ' ETH'
+    document.getElementById("pay_product_priceInWei").innerHTML = product_to_display['priceInWei'].toString() + ' Wei'
+    document.getElementById("pay_product_pay_button").innerHTML = 'Pay ' + (product_to_display['priceInWei']/ Math.pow(10, 19)).toString() + ' ETH'
+    $(pay_product_pay_button).attr("product_id" , product_to_display['_id'])
+    $(pay_product_pay_button).attr("contract_address" , sessionStorage['contract_address'])
+    $(pay_product_pay_button).attr("priceInWei" , product_to_display['priceInWei'])
+    $(pay_product_pay_button).attr("customer_id" , "test_customer_id12345")
+    $(pay_product_pay_button).attr("account_address" , sessionStorage['account_address'])
+        
+    $(pay_preview_modal).modal('show');
+
+}
+
+
+function pay(data){
+    product_id = data.getAttribute("product_id")
+    contract_address = data.getAttribute("contract_address")
+    priceInWei = data.getAttribute("priceInWei")
+    customer_id = data.getAttribute("customer_id")
+    account = data.getAttribute("account_address")
+    payForProduct(contract_address, product_id, priceInWei, customer_id, account)
+}
+
+function payForProduct(contract_address, product_id, priceInWei, customer_id, account) {
+    web3.eth.defaultAccount = account;
+   
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+    PaymentContractInstance.pay(customer_id, parseInt(product_id), {from : account, value : priceInWei} , function(error, result) {
+        if (!error){
+            console.log('Succesfully approved payment to buy the product');
+            console.log(result);
+            full_data = JSON.parse(localStorage['pending_transactions'])
+            full_data = $.merge(full_data, [{'type' : 'payForProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'], 'account' : sessionStorage['account_address']}]);
+            localStorage['pending_transactions'] = JSON.stringify(full_data)
+        } else {
+            console.log('error');
+        }
+    });
+}
+
+
+
+
+
 // Temporarily save the new product name
 function updateProductName(user_input){
     sessionStorage['new_product_name']=user_input.value
@@ -519,7 +576,7 @@ function updateProductDescription(user_input){
 
 // Temporarily save the new product price
 function updateProductPrice(user_input){
-    sessionStorage['new_product_price']=user_input.value
+    sessionStorage['new_product_price']=parseFloat(user_input.value)
 }
 
 
@@ -534,7 +591,7 @@ function saveProduct() {
     
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
-    PaymentContractInstance.createProduct(new_product_name, new_product_description, parseInt(new_product_price), function(error, result) {
+    PaymentContractInstance.createProduct(new_product_name, new_product_description, new_product_price * Math.pow(10, 19), function(error, result) {
         if (!error){
             console.log('Succesfully approved transaction to create a new product');
             console.log(result);
