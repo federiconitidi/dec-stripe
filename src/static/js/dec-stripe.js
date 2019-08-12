@@ -152,7 +152,7 @@ function checkWeb3Connection() {
     } else {
         sessionStorage['account_address'] = account
         console.log("web3 access granted on " + account)
-        document.getElementById("account_address").innerHTML = account.substring(0, 15) + "..."
+        document.getElementById("account_address").innerHTML = '<img style="width:10px;margin-bottom:2px" src="/static/img/green_dot.png"/> ' + account.substring(0, 15) + "..."
         pages_list = sessionStorage['navigation_history'].split(',')
         current_page = pages_list[pages_list.length-1]
         if(current_page=='/#' || current_page=='/') {
