@@ -47,37 +47,33 @@
 <script  id="before_connecting_element" language="text">
 <!-- desktop version -->
 <div class="desk" style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
-   <br>
-   <br>
-   <h1>Welcome to OnePay</h1>
-   <br><span style="font-size:16pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
-   <br><span style="font-size:16pt">1-minute setup. No company registration. No bank account needed.</span>
-   <br><span style="font-size:16pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
+
+   <img  style="width:40%" src="/static/img/Mobile_payment@2x.png"/>
+   <br><span style="font-size:18pt; 	font-family: 'Museo Sans Cyrl';font-weight: 500;">Welcome to OnePay</span>
+   <br><span style="font-size:14pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
+   <br><span style="font-size:14pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
    <br>
    <br>
    <br><span>Start by connecting your wallet</span>
    <br>
    <br>
    <button type="button" class="btn green-button" onclick="connectWeb3()">Connect</button>
-   <br>
-   <br>
    <br>
    <br>
 </div>
 <!-- mobile version -->
 <div class="mobi" style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
-   <br>
-   <br>
-   <h1>Welcome to OnePay</h1>
-   <br><span style="font-size:16pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
-   <br><span style="color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
+
+   <img  style="width:70%" src="/static/img/Mobile_payment@2x.png"/><br>
+   <br><span style="font-size:18pt; 	font-family: 'Museo Sans Cyrl';font-weight: 500;">Welcome to OnePay</span>
+   <br><span style="font-size:14pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
+   <br><span style="font-size:14pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
    <br>
    <br>
    <br><span>Start by connecting your wallet</span>
    <br>
    <br>
    <button type="button" class="btn green-button" onclick="connectWeb3()">Connect</button>
-   <br>
    <br>
    <br>
 </div>
@@ -87,8 +83,9 @@
 <!-- CREATE NEW CHECKOUT -->
 <script  id="create_new_checkout_element" language="text">
 <div style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
-   <br>
-   <br>
+   <img  style="width:200px" src="/static/img/store.png"/><br><br>
+   
+   
    <div class="bs-stepper">
       <div class="bs-stepper-header" role="tablist">
          <!-- your steps here -->
@@ -119,18 +116,42 @@
          <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger"></div>
       </div>
    </div>
+
+
+   <span>That's great! Now let's create your store.<br>You will be able to add products, set prices and accept payments in crypto.</span>
    <br>
    <br>
-   <span style="font-size:16pt">That's great!</span><br><br><span>Now let's create your store.<br>It will allow you create products, set prices and accept payments in crypto.</span>
    <br>
-   <br>
-   <br>
-   <button type="button" class="btn green-button" onclick="createPaymentContract()">Create my store</button>
+   <button type="button" class="btn green-button" onclick="createPaymentContractPopup()">Create my store</button>
    <br>
    <br>
    <div id="existing_stores"></div>
 </div>
 </script>
+
+
+<!-- CREATE STORE MODAL --> 
+<div class="modal fade" id="create_store_modal" style="	font-family: 'Museo Sans Cyrl';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="padding:20px; text-align:center">
+         <br>
+         <br>
+         <span id="pay_product_name" class="modal-title" style="text-align:center">Pick a name for your new store:</span>
+         <br>
+         <div class="input-group">
+            <input style="width:70%" type="text" class="form-control" oninput="updateStoreName(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+         </div>
+         <br>
+         <br>
+         <div>
+            <button type="button" class="btn green-button" onclick="createPaymentContract()">Create</button>
+         </div>
+         <br>
+         <br>
+      </div>
+   </div>
+</div>
+
 
 
 <!-- EXISTING CHECKOUTS -->

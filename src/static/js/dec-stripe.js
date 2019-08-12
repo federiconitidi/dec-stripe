@@ -523,11 +523,23 @@ function waitForPaymentContractDataLoaded() {
 
 // function to create a new payment contract (i.e. a new store)
 function createPaymentContract() {
+    store_name = sessionStorage['new_store_name']
+    // recreate a random avatar
+    themes = ['frogideas', 'sugarsweets', 'heatwave', 'daisygarden', 'seascape', 'summerwarmth', 'bythepool', 'duskfalling', 'berrypie', 'base']
+    number_of_colors= [2,3,4]
+    shapes = ['squares' , 'isogrids', 'spaceinvaders', 'labs/isogrids/hexa', 'labs/isogrids/hexa16']
+
+    theme = themes[Math.floor(Math.random() * 9)]
+    colors = (number_of_colors[Math.floor(Math.random() * 2)]).toString()
+    shape = shapes[Math.floor(Math.random() * 4)]
+    store_logo = "http://tinygraphs.com/"+shape+"/tinygraphs?theme="+theme+"&numcolors="+colors+"&size=220&fmt=svg"
+    
+    
     account = sessionStorage['account_address']
     web3.eth.defaultAccount = account;
     var FactoryContract = web3.eth.contract(FACTORY_ABI);
     var Factory = FactoryContract.at(FACTORY_CONTRACT);
-    Factory.newPaymentContract(account, function(error, result) {
+    Factory.newPaymentContract(account, store_name, store_logo, function(error, result) {
         if (!error){
             console.log('Succesfully approved transaction to create a new payment contract');
             console.log(result);
@@ -567,6 +579,11 @@ function deleteProduct(data) {
 
 function createProduct(){
     $(create_product_modal).modal('show');
+}
+
+
+function createPaymentContractPopup(){
+    $(create_store_modal).modal('show');
 }
 
 function payPreview(data){
@@ -644,6 +661,10 @@ function updateProductPrice(user_input){
     sessionStorage['new_product_price']=parseFloat(user_input.value)
 }
 
+// Temporarily save the new store name
+function updateStoreName(user_input){
+    sessionStorage['new_store_name']=user_input.value
+}
 
 
 // function to save a new product in the store
