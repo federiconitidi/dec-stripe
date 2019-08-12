@@ -26,6 +26,7 @@
 <title>dec-stripe</title>
 </head>
 <body class="colorshade">
+<div >
    <div id="head_bar" class="row top_bar" style="margin:0px">
    <div id="go_back_button" class="col-6" style="text-align:left">
    <span class="button-label" onclick="pageBack();">&larr; BACK</span>
@@ -39,6 +40,7 @@
       <div id="content_card" class="content_section shadow cloud-container" style="background-color:white;border-radius: 5px;">
       </div>
    </div>
+</div>
 </body>
 </html>
 
@@ -86,8 +88,6 @@
    <img  class="desk" style="width:200px" src="/static/img/store.png"/>
    <img  class="mobi" style="width:150px" src="/static/img/store.png"/>
    <br><br>
-   
-   
    <div class="bs-stepper">
       <div class="bs-stepper-header" role="tablist">
          <!-- your steps here -->
@@ -118,8 +118,6 @@
          <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger"></div>
       </div>
    </div>
-
-
    <span>That's great! Now let's create your store.<br>You will be able to add products, set prices and accept payments in crypto.</span>
    <br>
    <br>
@@ -158,20 +156,65 @@
 
 <!-- EXISTING CHECKOUTS -->
 <script  id="existing_checkouts_element" language="text">
-<div style="text-align:center">
- <br>
- <br>
- <span>Manage your existing stores:</span><br><div id="existing_stores"></div>
-  <br>
- <br>
- <button type="button" class="btn green-button" onclick="createPaymentContract()">Create new store</button>
- </div>
+<!-- desktop version -->
+<div class="desk" style="padding:5%">
+   <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">Manage your stores:</span>
+   <br><br><br>
+   <div id="existing_stores_desk" style="padding-left:30px; padding-right:30px"></div>
+   <br>
+   <br>
+   <br>
+   <div style="text-align:center">
+       <button type="button" class="btn green-button" onclick="createPaymentContractPopup()">Create new store</button>
+   </div>
+</div>
+<!-- mobile version -->
+<div class="mobi" style="padding:5%">
+   <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">Manage your stores:</span>
+   <br>
+   <div id="existing_stores_mobi" style="padding-left:30px; padding-right:30px"></div>
+   <br>
+   <br>
+   <br>
+   <div style="text-align:center">
+       <button type="button" class="btn green-button" onclick="createPaymentContractPopup()">Create new store</button>
+   </div>
+</div>
 </script>
+
+
+
+
 
 <!-- EXISTING STORE ROW -->
 <script  id="existing_store_row" language="text">
-<span style="color:blue; cursor:pointer" onclick="manageStore(this)" contract_address="{contract_address}">{contract_address}</span><br>
+<!-- desktop version -->
+<div class="desk row shadow" style="height:90px;cursor:pointer;border-radius:5px; " onclick="manageStore(this)" contract_address="{store_name}">
+   <div class="col-1" style="padding:20px">
+      <img style="height:50px; border-radius: 50%" src="{store_logo}" />
+   </div>
+   <div class="col-11" style="padding-top:20px">
+      <span style="font-size:14pt; font-family: 'Museo Sans Cyrl';font-weight: 100;">{store_name}</span><br>
+      <span style="font-size:12pt; font-family: 'Museo Sans Cyrl';font-weight: 100; color:rgb(190,190,190)">Contract address: {contract_address}</span><br>
+   </div>
+</div>
+<br>
+<br>
+<!-- mobile version -->
+<div class="mobi row shadow" style="height:90px;cursor:pointer;border-radius:5px; " onclick="manageStore(this)" contract_address="{store_name}">
+   <div class="col-3" style="padding:20px">
+      <img style="height:50px; border-radius: 50%" src="{store_logo}" />
+   </div>
+   <div class="col-9" style="padding-top:20px">
+      <span style="font-size:14pt; font-family: 'Museo Sans Cyrl';font-weight: 100;">{store_name}</span><br>
+      <span style="font-size:12pt; font-family: 'Museo Sans Cyrl';font-weight: 100; color:rgb(190,190,190)">{contract_address}</span><br>
+   </div>
+</div>
+<br>
+<br>
 </script>
+
+
 
 <!-- PENDING STORE ROW -->
 <script  id="pending_store_row" language="text">

@@ -184,7 +184,12 @@ function findStoresInBlockchain(account) {
                 if (err) return console.log(err);
                 contract = {
                     'owner': data[1],
-                    'contract_address': data[2]
+                    'contract_address': data[2],
+                    'store_name' : data[3],
+                    'store_logo' : data[4],
+                    'fees_wallet' : data[5],
+                    'fee_numerator' : data[6],
+                    'fee_denominator' : data[7]
                 }
               
                 full_data = JSON.parse(sessionStorage['contracts'])
@@ -239,13 +244,14 @@ function waitForDbReady() {
                 
                 rows = ''
                 for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
-                    rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'])
+                    rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'].substring(0, 15) + "...").replace(/{store_name}/g, contracts_of_this_account[i]['store_name']).replace(/{store_logo}/g, contracts_of_this_account[i]['store_logo'])
                 }
                 for (i = 0, len = pending_contracts_of_this_account.length; i < len; i++) {
                     rows = rows + document.getElementById("pending_store_row").innerHTML.replace(/{hash_shortened}/g, pending_contracts_of_this_account[i]['hash'].substring(0, 10) + "...").replace(/{hash}/g, pending_contracts_of_this_account[i]['hash'])
                 }
                 
-                document.getElementById("existing_stores").innerHTML = rows
+                document.getElementById("existing_stores_desk").innerHTML = rows
+                document.getElementById("existing_stores_mobi").innerHTML = rows
                 setTimeout("findStoresInBlockchain();", 2000);
                 
             } else {
@@ -312,6 +318,32 @@ function queryPaymentContractOwner(account, contract_address) {
     PaymentContractInstance.owner.call(function(err, data) {
         if (err) return console.log(err);
         sessionStorage['payment_contract_owner'] = data
+    });
+}
+
+function queryPaymentContractName(account, contract_address) {
+    sessionStorage['payment_contract_name'] = 'nodata'
+    web3.eth.defaultAccount = account;
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+
+    // query the blockchain for the owner of the contract
+    PaymentContractInstance.store_name.call(function(err, data) {
+        if (err) return console.log(err);
+        sessionStorage['payment_contract_name'] = data
+    });
+}
+
+function queryPaymentContractLogo(account, contract_address) {
+    sessionStorage['payment_contract_logo'] = 'nodata'
+    web3.eth.defaultAccount = account;
+    var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
+    var PaymentContractInstance = PaymentContract.at(contract_address);
+
+    // query the blockchain for the owner of the contract
+    PaymentContractInstance.store_logo.call(function(err, data) {
+        if (err) return console.log(err);
+        sessionStorage['payment_contract_logo'] = data
     });
 }
 
@@ -432,6 +464,8 @@ function manageStore(data){
 function getManageStorePage() {
     contract_address = sessionStorage['contract_address']
     account = sessionStorage['account']
+    queryPaymentContractName(account, contract_address)
+    queryPaymentContractLogo(account, contract_address)
     queryPaymentContractOwner(account, contract_address)
     queryPaymentContractWallet(account, contract_address)
     queryPaymentContractProducts(account, contract_address)
@@ -443,10 +477,12 @@ function getManageStorePage() {
 
 function waitForPaymentContractDataLoaded() {
     contract_address = sessionStorage['contract_address']
-    if (sessionStorage['payment_contract_owner'] == 'nodata' || sessionStorage['payment_contract_wallet'] == 'nodata' || sessionStorage['payment_contract_products'] == 'nodata' || sessionStorage['payment_contract_payments'] == 'nodata') {
+    if (sessionStorage['payment_contract_owner'] == 'nodata' || sessionStorage['payment_contract_wallet'] == 'nodata' || sessionStorage['payment_contract_products'] == 'nodata' || sessionStorage['payment_contract_payments'] == 'nodata' || sessionStorage['payment_contract_name'] == 'nodata' || sessionStorage['payment_contract_logo'] == 'nodata') {
         setTimeout("waitForPaymentContractDataLoaded();", 100);
     } else {
         contract_address = sessionStorage['contract_address']
+        store_name = sessionStorage['payment_contract_name']
+        store_logo = sessionStorage['payment_contract_logo']
         owner = sessionStorage['payment_contract_owner']
         wallet = sessionStorage['payment_contract_wallet']
         products = JSON.parse(sessionStorage['products'])
@@ -523,6 +559,7 @@ function waitForPaymentContractDataLoaded() {
 
 // function to create a new payment contract (i.e. a new store)
 function createPaymentContract() {
+    $(create_store_modal).modal('hide');
     store_name = sessionStorage['new_store_name']
     // recreate a random avatar
     themes = ['frogideas', 'sugarsweets', 'heatwave', 'daisygarden', 'seascape', 'summerwarmth', 'bythepool', 'duskfalling', 'berrypie', 'base']
@@ -583,6 +620,7 @@ function createProduct(){
 
 
 function createPaymentContractPopup(){
+    sessionStorage['new_store_name']=''
     $(create_store_modal).modal('show');
 }
 
@@ -1809,7 +1847,7 @@ function fingerprint_plugins() {
 
 
 
-FACTORY_CONTRACT="0x1cd2dbaf0443b14005960f8563982a245a36f7a4"
+FACTORY_CONTRACT="0x79b52fdca4bda447899c66c61691acc48f369c49"
 
 
 FACTORY_ABI=[
@@ -1852,6 +1890,26 @@ FACTORY_ABI=[
 			{
 				"name": "contract_address",
 				"type": "address"
+			},
+			{
+				"name": "store_name",
+				"type": "string"
+			},
+			{
+				"name": "store_logo",
+				"type": "string"
+			},
+			{
+				"name": "fees_wallet",
+				"type": "address"
+			},
+			{
+				"name": "fee_numerator",
+				"type": "uint256"
+			},
+			{
+				"name": "fee_denominator",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
