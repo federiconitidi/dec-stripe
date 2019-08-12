@@ -22,9 +22,9 @@
 
 <title>dec-stripe</title>
 </head>
-<body>
-   <div id="head_bar" class="top_bar shadow">
-   <div class="row">
+<body class="colorshade">
+   <div id="head_bar" class="row top_bar" style="margin:0px">
+
    <div class="col-6" style="text-align:left">
    <span class="button-label" onclick="pageBack();">&larr; BACK</span>
    </div>
@@ -32,9 +32,9 @@
    <span id="account_address" style="background:rgb(45, 51, 59); border-radius:3px; padding:4px;padding-left:10px;padding-right:10px; color:">Not connected</span>
    </div>
    </div>
-   </div>
+
    <div id="all_content" style="margin-top:30px" class="container-fluid">
-      <div id="content_card" class="content_section">
+      <div id="content_card" class="content_section shadow cloud-container" style="background-color:white;border-radius: 5px;">
       </div>
    </div>
 </body>
@@ -43,11 +43,16 @@
 
 <!-- BEFORE CONNECTING -->
 <script  id="before_connecting_element" language="text">
-<div style="text-align:center">
+<div style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
  <br>
  <br>
- <br><span>Connect your wallet and create your store!</span>
+ <h1>Welcome to OnePay</h1>
+ <br><span style="font-size:16pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
+ <br><span class="desk" style="font-size:16pt">1-minute setup. No company registration. No bank account needed.</span>
  <br>
+ <br>
+ <br>
+ <br><span>Start by connecting your wallet</span>
  <br>
  <br>
  <button type="button" class="btn green-button" onclick="connectWeb3()">Connect</button>
