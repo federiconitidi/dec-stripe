@@ -37,7 +37,8 @@ $(document).ready(function () {
 
 
 function changePage(extension) {
-        sessionStorage['existing_stores']=''
+        sessionStorage['existing_stores'] = ''
+        sessionStorage['store_situation'] = ''
         document.getElementById("all_content").innerHTML = ''
         var parent = document.getElementById("all_content")
         
@@ -570,11 +571,13 @@ function waitForPaymentContractDataLoaded() {
         pages_list = sessionStorage['navigation_history'].split(',')
         current_page = pages_list[pages_list.length-1]
         console.log('updating store page vs blockchain')
-        if (current_page=='/store'){
+
+        if (current_page=='/store' && content != sessionStorage['store_situation']){
             document.getElementById("all_content").innerHTML = content
             sessionStorage['window_timestamp'] = window.location.href
             setTimeout("getManageStorePage();", 2000);
         }
+        sessionStorage['store_situation'] = content
     }
 }
 
