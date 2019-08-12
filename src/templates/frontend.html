@@ -141,10 +141,10 @@
       <div class="modal-content" style="padding:20px; text-align:center">
          <br>
          <br>
-         <span id="pay_product_name" class="modal-title" style="text-align:center">Pick a name for your new store:</span>
+         <span id="store_name" class="modal-title" style="text-align:center">Pick a name for your new store:</span>
          <br>
          <div class="input-group">
-            <input style="width:70%" type="text" class="form-control" oninput="updateStoreName(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <input id="input_form_store_name" style="width:70%" type="text" class="form-control" oninput="updateStoreName(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
          </div>
          <br>
          <br>
@@ -231,146 +231,199 @@
 
 <!-- MANAGE STORE PANEL -->
 <script  id="manage_store_panel_element" language="text">
-<div id="content_card" class="content_section shadow adaptable-cloud-container" style="background-color:white;border-radius: 5px;">
-<span>Managing store: {contract_address}</span><br><br><br>
-<div class="row">
-<div class="col-sm-3"><span><strong>Owner:</strong></span></div>
-<div class="col-sm-9"><span>{owner}</span></div>
-<br><br>
-<div class="col-sm-3"><span><strong>Wallet:</strong></span></div>
-<div class="col-sm-9"><span>{wallet}</span></div>
-<br><br>
-<div class="col-sm-3"><span><strong>Products:</strong></span></div>
-<div class="col-sm-9">
-<div style="text-align:right">
-{loading} <button type="button" class="btn green-button" onclick="createProduct()">Create product</button>
- </div>
- <br>
-<span>{products_rows}</span>
-<br><br><br>
+<!-- desktop version -->
+<div id="content_card" class="desk content_section shadow adaptable-cloud-container" style="background-color:white;border-radius: 5px;">
+   <div class="row" style="padding:5%">
+      <div class="col-2" style="padding:20px">
+         <img style="height:50px; border-radius: 50%" src="{store_logo}" />
+      </div>
+      <div class="col-10" style="padding-top:20px">
+         <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">{store_name}</span><br>
+         <span style="font-size:12pt; font-family: 'Museo Sans Cyrl';font-weight: 100; color:rgb(190,190,190)">Contract address: {contract_address}</span><br>
+      </div>
+   </div>
+   <div class="row " style="padding-left:5%; padding-right:5%">
+      <div class="col-2"><span><strong>Owner:</strong></span></div>
+      <div class="col-10"><span style="background:rgb(240, 240, 240); border-radius:3px; padding:4px;padding-left:10px;padding-right:10px">{owner}</span></div>
+      <br><br>
+      <div class="col-2"><span><strong>Wallet:</strong></span></div>
+      <div class="col-10"><span style="background:rgb(240, 240, 240); border-radius:3px; padding:4px;padding-left:10px;padding-right:10px">{wallet}</span></div>
+      <br><br>
+      <div class="col-2"><span><strong>Products:</strong></span></div>
+      <div class="col-10">
+         <div style="text-align:left">
+            <button type="button" class="btn green-button" onclick="createProduct()">{loading} Create product</button> 
+         </div>
+         <br>
+         <div style="padding-left:15px">
+            {products_rows}
+         </div>
+         <br><br><br>
+      </div>
+      <div class="col-2"><span><strong>Orders:</strong></span></div>
+      <div class="col-10">
+         <div style="padding-left:15px">
+            {payments_rows}
+         </div>
+      </div>
+      <br><br><br>
+   </div>
 </div>
-<div class="col-sm-3"><span><strong>Orders received:</strong></span></div>
-<div class="col-sm-9">
-<span>{payments_rows}</span>
-</div>
-
-</div>
-</div>
-
 </script>
 
-<!-- PRODUCT ROW -->
-<script  id="product_row" language="text">
-<div class="shadow" style="padding:10px; border-radius: 5px; ">
-<table class="table" style="font-size:10pt; text-align:center">
-   <tbody>
-<tr>
-   <td style="text-align:left; width:30%">Name: </td>
-    <td style="text-align:left">{name}</td>
-</tr>
-<tr>
-   <td style="text-align:left">Description: </td>
-    <td style="text-align:left">{description}</td>
-</tr>
-<tr>
-   <td style="text-align:left">Price: </td>
-    <td style="text-align:left">{price}</td>
-</tr>
-<tr>
-   <td style="text-align:left">Active: </td>
-    <td style="text-align:left">{isactive}</td>
-</tr>
-<tr>
-   <td style="text-align:left">Id: </td>
-    <td style="text-align:left">{_id}</td>
-</tr>
-   </tbody>
-</table>
-<div style="text-align:right">
-<button type="button" class="btn green-button" contract_address="{contract_address}" product_id="{_id}" onclick="payPreview(this)">Pay preview</button> {loading_delete_product} <button type="button" class="btn secondary" contract_address="{contract_address}" product_id="{_id}" onclick="{delete_function}">Delete</button>
-
- </div>
-</div>
-<br>
-</script>
 
 
 <!-- PAYMENT ROW -->
 <script  id="payment_row" language="text">
-<div class="shadow" style="padding:10px; border-radius: 5px; ">
-<span><strong>Timestamp:</strong></span> <span>{timestamp}</span><br>
-<span><strong>Customer id:</strong></span> <span>{customer_id}</span><br>
-<span><strong>Product name:</strong></span> <span>{product_name}</span><br>
-<span><strong>Product id:</strong></span> <span>{product_id}</span><br>
-<span><strong>Price paid:</strong></span> <span>{price_paid}</span><br>
-<span><strong>Sender:</strong></span> <span>{sender}</span><br>
+<div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
+   <div class="col-3">
+      <span>Timestamp:</span>
+   </div>
+   <div class="col-9">
+      <span>{timestamp}</span>
+   </div>
+   <div class="col-3">
+      <span>Customer id:</span>
+   </div>
+   <div class="col-9">
+      <span>{customer_id}</span>
+   </div>
+   <div class="col-3">
+      <span>Product name:</span>
+   </div>
+   <div class="col-9">
+      <span>{product_name}</span>
+   </div>
+   <div class="col-3">
+      <span>Product id:</span>
+   </div>
+   <div class="col-9">
+      <span>{product_id}</span>
+   </div>
+   <div class="col-3">
+      <span>Price paid:</span>
+   </div>
+   <div class="col-9">
+      <span>{price_paid}</span>
+   </div>
+   <div class="col-3">
+      <span>Sender:</span>
+   </div>
+   <div class="col-9">
+      <span>{sender}</span>
+   </div>
 </div>
 <br>
 </script>
 
 
-<!-- CREATE PRODUCT PANEL ELEMENT --> 
-<div class="modal fade" id="create_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title">Create product</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-         </div>
-         
-         
-         <div class="modal-body">
-            <p style="color:grey">Name: </p>
-            <div class="input-group mb-3">
-               <input type="text" class="form-control" oninput="updateProductName(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-            </div>
-            <br>
-            <p style="color:grey">Description:</p>
-            <div class="input-group mb-3">
-               <textarea class="form-control" rows="3" id="comment" oninput="updateProductDescription(this)"></textarea>
-            </div>
-            <p style="color:grey">Price ETH: </p>
-            <div class="input-group mb-3">
-               <input type="text" class="form-control" oninput="updateProductPrice(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-            </div>
-         </div>
-         
-    
-         <div class="modal-footer">
-            <button type="button" class="btn green-button" data-dismiss="modal" onclick="saveProduct()">Save</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-      </div>
+
+
+
+
+<!-- PRODUCT ROW -->
+<script  id="product_row" language="text">
+<div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
+   <div class="col-3">
+      <span>Name:</span>
    </div>
-</div>  
+   <div class="col-9">
+      <span>{name}</span>
+   </div>
+   <div class="col-3">
+      <span>Description:</span>
+   </div>
+   <div class="col-9">
+      <span>{description}</span>
+   </div>
+   <div class="col-3">
+      <span>Price:</span>
+   </div>
+   <div class="col-9">
+      <span>{price} ETH</span>
+   </div>
+   <div class="col-3">
+      <span>Product id:</span>
+   </div>
+   <div class="col-9">
+      <span>{_id} ETH</span>
+   </div>
+   <div class="col-12" style="text-align:right">
+      <button type="button" class="btn green-button" contract_address="{contract_address}" product_id="{_id}" onclick="{pay_preview_function}">{loading_payment_preview_product} Pay preview</button> <button type="button" class="btn secondary" contract_address="{contract_address}" product_id="{_id}" onclick="{delete_function}">{loading_delete_product} Delete</button>
+   </div>
+</div>
+<br>
+</script>
 
 
-<!-- PAY ELEMENT --> 
-<div class="modal fade" id="pay_preview_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+
+<!-- CREATE PRODUCT PANEL ELEMENT --> 
+<div class="modal fade" id="create_product_modal" style="	font-family: 'Museo Sans Cyrl';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content" style="padding:20px">
-         <h5 id="pay_product_name" class="modal-title" style="text-align:center"></h5>
-         <br><br>       
-         <table class="table" style="font-size:10pt; text-align:center">
-            <tbody>
-               <tr>
-                  <td style="text-align:left; width:30%">Description: </td>
-                  <td id="pay_product_description" style="text-align:left"></td>
-               </tr>
-               <tr>
-                  <td style="text-align:left">Price: </td>
-                  <td style="text-align:left"><span id="pay_product_priceInEth"></span><br><span id="pay_product_priceInWei" style="color:grey"></span></td>
-               </tr>
-            </tbody>
-         </table>
-         <div class="modal-body">
-            <div style="text-align:center">
-               <button id="pay_product_pay_button" product_id="" contract_address="" priceInWei="" customer_id="" account_address=""  type="button" class="btn green-button" data-dismiss="modal" onclick="pay(this)"></button><br><br>
-               <span style="color:grey" data-dismiss="modal">Cancel</span> 
-            </div>
+      <div class="modal-content" style="padding:20px; text-align:left">
+         <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">Create a product</span><br>
+         <p style="color:grey">Name: </p>
+         <div class="input-group mb-3">
+            <input id="input_form_new_product_name" type="text" class="form-control" oninput="updateProductName(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+         </div>
+         <br>
+         <p style="color:grey">Description:</p>
+         <div class="input-group mb-3">
+            <textarea id="input_form_new_product_description" class="form-control" rows="3" id="comment" oninput="updateProductDescription(this)"></textarea>
+         </div>
+         <p style="color:grey">Price in ETH: </p>
+         <div class="input-group mb-3">
+            <input id="input_form_new_product_price" type="text" class="form-control" oninput="updateProductPrice(this)" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+         </div>
+         <div class="modal-footer" style="text-align:center">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn green-button" data-dismiss="modal" onclick="saveProduct()">Save</button>
          </div>
       </div>
    </div>
 </div>
+
+
+
+
+<!-- PAY ELEMENT --> 
+<div class="modal fade" id="pay_preview_modal" style="	font-family: 'Museo Sans Cyrl';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div  class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content" style="padding:50px; text-align:center">
+   <div>
+      <img id="pay_product_store_logo" style="height:70px; border-radius: 50%" src="" /><br><br>
+      <span id="pay_product_store_name" style="font-size:20pt; font-family: 'Museo Sans Cyrl';font-weight: 300;"></span><br>
+      <br><br>
+      <div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240); text-align:left">
+         <div class="col-5">
+            <span>Product name:</span>
+         </div>
+         <div class="col-7">
+            <span id="pay_product_name"></span>
+            <br><br>
+         </div>
+         <div class="col-5">
+            <span>Description:</span>
+         </div>
+         <div class="col-7">
+            <span id="pay_product_description"></span>
+            <br><br>
+         </div>
+         <div class="col-5">
+            <span>Price:</span>
+         </div>
+         <div class="col-7">
+            <span id="pay_product_priceInEth"></span>
+            <br>
+         </div>
+      </div>
+      <br><br>   
+      <div style="text-align:center">
+         <button id="pay_product_pay_button" product_id="" contract_address="" priceInWei="" customer_id="" account_address=""  type="button" class="btn green-button" data-dismiss="modal" onclick="pay(this)"></button><br><br>
+         <span style="color:grey" data-dismiss="modal">Cancel</span> 
+      </div>
+   </div>
+</div>
+
+

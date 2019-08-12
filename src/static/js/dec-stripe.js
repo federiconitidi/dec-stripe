@@ -508,11 +508,27 @@ function waitForPaymentContractDataLoaded() {
                         pending_contracts_of_this_product = $.merge(pending_contracts_of_this_product, [full_data[j]])
                     }
                 }
-                // if there is transaction to create a new product, show the loading gif next to the new product button
+                // if there is transaction to delete new product, show the loading gif next to the new product button
                 if (pending_contracts_of_this_product.length > 0) {
                     row = row.replace(/{loading_delete_product}/g, '<img  style="height:20px" src="/static/img/loading.gif"/>').replace(/{delete_function}/g, '')
                 } else {
                     row = row.replace(/{loading_delete_product}/g, '').replace(/{delete_function}/g, 'deleteProduct(this)')
+                }
+
+
+                // check if there are transactions in progress for paying a product prom the pay preview mode
+                pending_payment_for_this_product = []
+                full_data = JSON.parse(localStorage['pending_transactions'])
+                for (j = 0, len1 = full_data.length; j < len1; j++) {
+                    if (full_data[j]['type'] == 'payForProduct' && full_data[j]['account'] == sessionStorage['account_address'] && full_data[j]['metadata'] == sessionStorage['contract_address'] + products[i]['_id']) {
+                        pending_payment_for_this_product = $.merge(pending_payment_for_this_product, [full_data[j]])
+                    }
+                }
+                // if there is transaction to delete new product, show the loading gif next to the new product button
+                if (pending_payment_for_this_product.length > 0) {
+                    row = row.replace(/{loading_payment_preview_product}/g, '<img  style="height:20px" src="/static/img/loading.gif"/>').replace(/{pay_preview_function}/g, '')
+                } else {
+                    row = row.replace(/{loading_payment_preview_product}/g, '').replace(/{pay_preview_function}/g, 'payPreview(this)')
                 }
                 
                 products_rows = products_rows + row     
@@ -533,7 +549,7 @@ function waitForPaymentContractDataLoaded() {
         console.log(sessionStorage['payments'])
         
 
-        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, products_rows).replace(/{payments_rows}/g, payments_rows)
+        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{store_logo}/g, store_logo).replace(/{store_name}/g, store_name).replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, products_rows).replace(/{payments_rows}/g, payments_rows)
 
         // check if there are transactions in progress for creating a new product
         pending_contracts_of_this_account = []
@@ -549,7 +565,7 @@ function waitForPaymentContractDataLoaded() {
         } else {
             content = content.replace(/{loading}/g, '')
         }
-       
+
 
         pages_list = sessionStorage['navigation_history'].split(',')
         current_page = pages_list[pages_list.length-1]
@@ -622,12 +638,19 @@ function deleteProduct(data) {
 
 
 function createProduct(){
+    $(input_form_new_product_name).val('');
+    $(input_form_new_product_description).val('');
+    $(input_form_new_product_price).val('');
+    sessionStorage['new_product_name'] = ''
+    sessionStorage['new_product_description'] = ''
+    sessionStorage['new_product_price'] = ''
     $(create_product_modal).modal('show');
 }
 
 
 function createPaymentContractPopup(){
     sessionStorage['new_store_name']=''
+    $(input_form_store_name).val('');
     $(create_store_modal).modal('show');
 }
 
@@ -644,16 +667,20 @@ function payPreview(data){
     // generate a random customer id
     customer_id = 'customer_' + (Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()+(Math.floor(Math.random() * 6)).toString()
     
-    document.getElementById("pay_product_name").innerHTML = 'Buy ' + product_to_display['name']
+    
+    document.getElementById("pay_product_store_name").innerHTML = sessionStorage['payment_contract_name']
+    $(pay_product_store_logo).attr("src" , sessionStorage['payment_contract_logo'])
+    
+    document.getElementById("pay_product_name").innerHTML = product_to_display['name']
     document.getElementById("pay_product_description").innerHTML = product_to_display['description']
     document.getElementById("pay_product_priceInEth").innerHTML = (product_to_display['priceInWei']/ Math.pow(10, 18)).toString() + ' ETH'
-    document.getElementById("pay_product_priceInWei").innerHTML = product_to_display['priceInWei'].toString() + ' Wei'
     document.getElementById("pay_product_pay_button").innerHTML = 'Pay ' + (product_to_display['priceInWei']/ Math.pow(10, 18)).toString() + ' ETH'
     $(pay_product_pay_button).attr("product_id" , product_to_display['_id'])
     $(pay_product_pay_button).attr("contract_address" , sessionStorage['contract_address'])
     $(pay_product_pay_button).attr("priceInWei" , product_to_display['priceInWei'])
     $(pay_product_pay_button).attr("customer_id" , customer_id)
     $(pay_product_pay_button).attr("account_address" , sessionStorage['account_address'])
+    
         
     $(pay_preview_modal).modal('show');
 
@@ -672,6 +699,7 @@ function pay(data){
 function payForProduct(contract_address, product_id, priceInWei, customer_id, account) {
     web3.eth.defaultAccount = account;
    
+    sessionStorage['product_id'] = product_id
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
     PaymentContractInstance.pay(customer_id, parseInt(product_id), {from : account, value : priceInWei} , function(error, result) {
@@ -679,7 +707,7 @@ function payForProduct(contract_address, product_id, priceInWei, customer_id, ac
             console.log('Succesfully approved payment to buy the product');
             console.log(result);
             full_data = JSON.parse(localStorage['pending_transactions'])
-            full_data = $.merge(full_data, [{'type' : 'payForProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'], 'account' : sessionStorage['account_address']}]);
+            full_data = $.merge(full_data, [{'type' : 'payForProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address']+sessionStorage['product_id'], 'account' : sessionStorage['account_address']}]);
             localStorage['pending_transactions'] = JSON.stringify(full_data)
         } else {
             console.log('error');
