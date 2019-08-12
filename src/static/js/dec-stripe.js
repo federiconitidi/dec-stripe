@@ -244,7 +244,7 @@ function waitForDbReady() {
                 
                 rows = ''
                 for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
-                    rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address'].substring(0, 15) + "...").replace(/{store_name}/g, contracts_of_this_account[i]['store_name']).replace(/{store_logo}/g, contracts_of_this_account[i]['store_logo'])
+                    rows = rows + document.getElementById("existing_store_row").innerHTML.replace(/{contract_address}/g, contracts_of_this_account[i]['contract_address']).replace(/{contract_address_display}/g, contracts_of_this_account[i]['contract_address'].substring(0, 15) + "...").replace(/{store_name}/g, contracts_of_this_account[i]['store_name']).replace(/{store_logo}/g, contracts_of_this_account[i]['store_logo'])
                 }
                 for (i = 0, len = pending_contracts_of_this_account.length; i < len; i++) {
                     rows = rows + document.getElementById("pending_store_row").innerHTML.replace(/{hash_shortened}/g, pending_contracts_of_this_account[i]['hash'].substring(0, 10) + "...").replace(/{hash}/g, pending_contracts_of_this_account[i]['hash'])

@@ -189,7 +189,7 @@
 <!-- EXISTING STORE ROW -->
 <script  id="existing_store_row" language="text">
 <!-- desktop version -->
-<div class="desk row shadow" style="height:90px;cursor:pointer;border-radius:5px; " onclick="manageStore(this)" contract_address="{store_name}">
+<div class="desk row shadow" style="height:90px;cursor:pointer;border-radius:5px; " onclick="manageStore(this)" contract_address="{contract_address}">
    <div class="col-1" style="padding:20px">
       <img style="height:50px; border-radius: 50%" src="{store_logo}" />
    </div>
@@ -201,13 +201,13 @@
 <br>
 <br>
 <!-- mobile version -->
-<div class="mobi row shadow" style="height:90px;cursor:pointer;border-radius:5px; " onclick="manageStore(this)" contract_address="{store_name}">
+<div class="mobi row shadow" style="height:90px;cursor:pointer;border-radius:5px; " onclick="manageStore(this)" contract_address="{contract_address}">
    <div class="col-3" style="padding:20px">
       <img style="height:50px; border-radius: 50%" src="{store_logo}" />
    </div>
    <div class="col-9" style="padding-top:20px">
       <span style="font-size:14pt; font-family: 'Museo Sans Cyrl';font-weight: 100;">{store_name}</span><br>
-      <span style="font-size:12pt; font-family: 'Museo Sans Cyrl';font-weight: 100; color:rgb(190,190,190)">{contract_address}</span><br>
+      <span style="font-size:12pt; font-family: 'Museo Sans Cyrl';font-weight: 100; color:rgb(190,190,190)">{contract_address_display}</span><br>
    </div>
 </div>
 <br>
