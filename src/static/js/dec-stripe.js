@@ -543,13 +543,13 @@ function waitForPaymentContractDataLoaded() {
         
         payments_rows=''
         for (i = 0, len = payments.length; i < len; i++) {
-                payments_rows = payments_rows + document.getElementById("payment_row").innerHTML.replace(/{customer_id}/g, payments[i]['customer_id']).replace(/{product_id}/g, payments[i]['product_id']).replace(/{product_name}/g, payments[i]['product_name']).replace(/{price_paid}/g, (payments[i]['price_paid']/ Math.pow(10, 18)).toString()+' ETH').replace(/{timestamp}/g, payments[i]['timestamp']).replace(/{sender}/g, payments[i]['sender'])
+                payments_rows = payments_rows + document.getElementById("payment_row").innerHTML.replace(/{customer_id}/g, payments[i]['customer_id']).replace(/{product_id}/g, payments[i]['product_id']).replace(/{product_name}/g, payments[i]['product_name']).replace(/{price_paid}/g, (payments[i]['price_paid']/ Math.pow(10, 18)).toString()+' ETH').replace(/{timestamp}/g, payments[i]['timestamp']).replace(/{sender}/g, payments[i]['sender']).replace(/{sender_display}/g, payments[i]['sender'].substring(0, 15) + "...")
  
         }
         console.log(sessionStorage['payments'])
         
 
-        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{store_logo}/g, store_logo).replace(/{store_name}/g, store_name).replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, products_rows).replace(/{payments_rows}/g, payments_rows)
+        var content = document.getElementById("manage_store_panel_element").innerHTML.replace(/{store_logo}/g, store_logo).replace(/{store_name}/g, store_name).replace(/{contract_address}/g, contract_address).replace(/{owner}/g, owner).replace(/{wallet}/g, wallet).replace(/{products_rows}/g, products_rows).replace(/{payments_rows}/g, payments_rows).replace(/{contract_address_display}/g, contract_address.substring(0, 15) + "...").replace(/{owner_display}/g, owner.substring(0, 15) + "...").replace(/{wallet_display}/g, wallet.substring(0, 15) + "...")
 
         // check if there are transactions in progress for creating a new product
         pending_contracts_of_this_account = []

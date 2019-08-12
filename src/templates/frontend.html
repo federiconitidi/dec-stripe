@@ -267,13 +267,52 @@
       <br><br><br>
    </div>
 </div>
+<!-- mobile version -->
+<div id="content_card" class="mobi content_section shadow adaptable-cloud-container" style="background-color:white;border-radius: 5px;">
+   <div class="row" style="padding:5%">
+      <div class="col-sm-2" style="padding:20px">
+         <img style="height:50px; border-radius: 50%" src="{store_logo}" />
+      </div>
+      <div class="col-sm-10">
+         <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">{store_name}</span><br>
+         <span style="font-size:12pt; font-family: 'Museo Sans Cyrl';font-weight: 100; color:rgb(190,190,190)">Contract address: {contract_address_display}</span><br>
+      </div>
+   </div>
+   <div class="row " style="padding-left:5%; padding-right:5%">
+      <div class="col-sm-2"><span><strong>Owner:</strong></span></div>
+      <div class="col-sm-10"><span style="background:rgb(240, 240, 240); border-radius:3px; padding:4px;padding-left:10px;padding-right:10px">{owner_display}</span></div>
+      <br><br>
+      <div class="col-sm-2"><span><strong>Wallet:</strong></span></div>
+      <div class="col-sm-10"><span style="background:rgb(240, 240, 240); border-radius:3px; padding:4px;padding-left:10px;padding-right:10px">{wallet_display}</span></div>
+      <br><br>
+      <div class="col-sm-2"><span><strong>Products:</strong></span></div>
+      <div class="col-sm-10">
+         <div style="text-align:left">
+            <button type="button" class="btn green-button" onclick="createProduct()">{loading} Create product</button> 
+         </div>
+         <br>
+         <div style="padding-left:15px;padding-right:15px">
+            {products_rows}
+         </div>
+         <br><br><br>
+      </div>
+      <div class="col-sm-2"><span><strong>Orders:</strong></span></div>
+      <div class="col-sm-10">
+         <div style="padding-left:15px;padding-right:15px">
+            {payments_rows}
+         </div>
+      </div>
+      <br><br><br>
+   </div>
+</div>
 </script>
 
 
 
 <!-- PAYMENT ROW -->
 <script  id="payment_row" language="text">
-<div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
+<!-- desktop version -->
+<div class="desk row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
    <div class="col-3">
       <span>Timestamp:</span>
    </div>
@@ -312,6 +351,45 @@
    </div>
 </div>
 <br>
+<!-- mobile version -->
+<div class="mobi row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
+   <div class="col-5">
+      <span>Timestamp:</span>
+   </div>
+   <div class="col-7">
+      <span>{timestamp}</span>
+   </div>
+   <div class="col-5">
+      <span>Cust id:</span>
+   </div>
+   <div class="col-7">
+      <span>{customer_id}</span>
+   </div>
+   <div class="col-5">
+      <span>Name:</span>
+   </div>
+   <div class="col-7">
+      <span>{product_name}</span>
+   </div>
+   <div class="col-5">
+      <span>Product id:</span>
+   </div>
+   <div class="col-7">
+      <span>{product_id}</span>
+   </div>
+   <div class="col-5">
+      <span>Price paid:</span>
+   </div>
+   <div class="col-7">
+      <span>{price_paid}</span>
+   </div>
+   <div class="col-5">
+      <span>Sender:</span>
+   </div>
+   <div class="col-7">
+      <span>{sender_display}</span>
+   </div>
+</div>
 </script>
 
 
@@ -321,7 +399,8 @@
 
 <!-- PRODUCT ROW -->
 <script  id="product_row" language="text">
-<div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
+<!-- desktop version -->
+<div class="desk row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
    <div class="col-3">
       <span>Name:</span>
    </div>
@@ -344,9 +423,41 @@
       <span>Product id:</span>
    </div>
    <div class="col-9">
-      <span>{_id} ETH</span>
+      <span>{_id}</span>
    </div>
    <div class="col-12" style="text-align:right">
+      <button type="button" class="btn green-button" contract_address="{contract_address}" product_id="{_id}" onclick="{pay_preview_function}">{loading_payment_preview_product} Pay preview</button> <button type="button" class="btn secondary" contract_address="{contract_address}" product_id="{_id}" onclick="{delete_function}">{loading_delete_product} Delete</button>
+   </div>
+</div>
+<br>
+<!-- mobile version -->
+<div class="mobi row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240)">
+   <div class="col-5">
+      <span>Name:</span>
+   </div>
+   <div class="col-7">
+      <span>{name}</span>
+   </div>
+   <div class="col-5">
+      <span>Description:</span>
+   </div>
+   <div class="col-7">
+      <span>{description}</span>
+   </div>
+   <div class="col-5">
+      <span>Price:</span>
+   </div>
+   <div class="col-7">
+      <span>{price} ETH</span>
+   </div>
+   <div class="col-5">
+      <span>Product id:</span>
+   </div>
+   <div class="col-7">
+      <span>{_id}</span>
+      <br><br>
+   </div>
+   <div class="col-12" style="text-align:center">
       <button type="button" class="btn green-button" contract_address="{contract_address}" product_id="{_id}" onclick="{pay_preview_function}">{loading_payment_preview_product} Pay preview</button> <button type="button" class="btn secondary" contract_address="{contract_address}" product_id="{_id}" onclick="{delete_function}">{loading_delete_product} Delete</button>
    </div>
 </div>
@@ -388,14 +499,15 @@
 <!-- PAY ELEMENT --> 
 <div class="modal fade" id="pay_preview_modal" style="	font-family: 'Museo Sans Cyrl';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 <div  class="modal-dialog modal-dialog-centered" role="document">
-<div class="modal-content" style="padding:50px; text-align:center">
+<!-- desktop version -->
+<div class="modal-content" style="padding:40px; text-align:center">
    <div>
       <img id="pay_product_store_logo" style="height:70px; border-radius: 50%" src="" /><br><br>
       <span id="pay_product_store_name" style="font-size:20pt; font-family: 'Museo Sans Cyrl';font-weight: 300;"></span><br>
       <br><br>
       <div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240); text-align:left">
          <div class="col-5">
-            <span>Product name:</span>
+            <span>Product:</span>
          </div>
          <div class="col-7">
             <span id="pay_product_name"></span>
