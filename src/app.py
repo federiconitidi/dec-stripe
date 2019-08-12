@@ -39,22 +39,22 @@ def bla(metadata):
 def allstores():
     return render_template('frontend.html')
 
-@app.route('/store_transaction/', methods=['GET'])
-def store_transaction():
-    tx_type = request.args['tx_type']
-    tx_hash = request.args['tx_hash']
-    account = request.args['account']
-    tx_status = 'just_sent'
-    created_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-
-    transaction = Transaction(tx_type, tx_hash, tx_status, account, created_date)
-    transaction.save()
-    print("new transaction saved")
-    response = app.response_class(
-        response=json.dumps({}),
-        status=200,
-        mimetype='application/json')
-    return response
+##@app.route('/store_transaction/', methods=['GET'])
+##def store_transaction():
+##    tx_type = request.args['tx_type']
+##    tx_hash = request.args['tx_hash']
+##    account = request.args['account']
+##    tx_status = 'just_sent'
+##    created_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+##
+##    transaction = Transaction(tx_type, tx_hash, tx_status, account, created_date)
+##    transaction.save()
+##    print("new transaction saved")
+##    response = app.response_class(
+##        response=json.dumps({}),
+##        status=200,
+##        mimetype='application/json')
+##    return response
 
 
 
