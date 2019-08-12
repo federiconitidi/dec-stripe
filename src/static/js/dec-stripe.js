@@ -106,6 +106,7 @@ function pageBack() {
 
 function getStartedPage() {
     document.getElementById("content_card").innerHTML = document.getElementById("before_connecting_element").innerHTML
+    document.getElementById("go_back_button").innerHTML = ''
 }
 
 
