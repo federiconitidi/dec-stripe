@@ -141,10 +141,18 @@ html{
     bottom:5%;
     left:0;
     right:0;
-
     overflow:hidden;
     z-index:-1; /* Remove this line if it's not going to be a background! */
 }
+
+.adaptable-cloud-container{
+    position:absolute;
+    top:10%;
+    left:0;
+    right:0;
+    z-index:-1; /* Remove this line if it's not going to be a background! */
+}
+
 
 
 body {

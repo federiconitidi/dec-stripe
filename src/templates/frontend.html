@@ -48,7 +48,8 @@
 <!-- BEFORE CONNECTING -->
 <script  id="before_connecting_element" language="text">
 <!-- desktop version -->
-<div class="desk" style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
+<div id="content_card" class="desk content_section shadow cloud-container" style="background-color:white;border-radius: 5px;">
+<div style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
 
    <img  style="width:40%" src="/static/img/Mobile_payment@2x.png"/>
    <br><span style="font-size:18pt; 	font-family: 'Museo Sans Cyrl';font-weight: 500;">Welcome to OnePay</span>
@@ -63,9 +64,10 @@
    <br>
    <br>
 </div>
+</div>
 <!-- mobile version -->
-<div class="mobi" style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
-
+<div id="content_card" class="mobi content_section shadow cloud-container" style="background-color:white;border-radius: 5px;">
+<div style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
    <img  style="width:70%" src="/static/img/Mobile_payment@2x.png"/><br>
    <br><span style="font-size:18pt; 	font-family: 'Museo Sans Cyrl';font-weight: 500;">Welcome to OnePay</span>
    <br><span style="font-size:14pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
@@ -79,11 +81,13 @@
    <br>
    <br>
 </div>
+</div>
 </script>
 
 
-<!-- CREATE NEW CHECKOUT -->
+<!-- CREATE FIRST CHECKOUT -->
 <script  id="create_new_checkout_element" language="text">
+<div id="content_card" class="content_section shadow cloud-container" style="background-color:white;border-radius: 5px;">
 <div style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
    <img  class="desk" style="width:200px" src="/static/img/store.png"/>
    <img  class="mobi" style="width:150px" src="/static/img/store.png"/>
@@ -127,6 +131,7 @@
    <br>
    <div id="existing_stores"></div>
 </div>
+</div>
 </script>
 
 
@@ -157,6 +162,7 @@
 <!-- EXISTING CHECKOUTS -->
 <script  id="existing_checkouts_element" language="text">
 <!-- desktop version -->
+<div id="content_card" class="desk content_section shadow adaptable-cloud-container" style="background-color:white;border-radius: 5px;">
 <div class="desk" style="padding:5%">
    <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">Manage your stores:</span>
    <br><br><br>
@@ -167,7 +173,9 @@
        <button type="button" class="btn green-button" onclick="createPaymentContractPopup()">Create new store</button>
    </div>
 </div>
+</div>
 <!-- mobile version -->
+<div id="content_card" class="mobi content_section shadow adaptable-cloud-container" style="background-color:white;border-radius: 5px;">
 <div class="mobi" style="padding:5%">
    <span style="font-size:16pt; font-family: 'Museo Sans Cyrl';font-weight: 300;">Manage your stores:</span>
    <br>
@@ -177,6 +185,7 @@
    <div style="text-align:center">
        <button type="button" class="btn green-button" onclick="createPaymentContractPopup()">Create new store</button>
    </div>
+</div>
 </div>
 </script>
 
@@ -222,6 +231,7 @@
 
 <!-- MANAGE STORE PANEL -->
 <script  id="manage_store_panel_element" language="text">
+<div id="content_card" class="content_section shadow adaptable-cloud-container" style="background-color:white;border-radius: 5px;">
 <span>Managing store: {contract_address}</span><br><br><br>
 <div class="row">
 <div class="col-sm-3"><span><strong>Owner:</strong></span></div>
@@ -244,6 +254,7 @@
 <span>{payments_rows}</span>
 </div>
 
+</div>
 </div>
 
 </script>

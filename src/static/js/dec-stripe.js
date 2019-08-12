@@ -38,8 +38,8 @@ $(document).ready(function () {
 
 function changePage(extension) {
         sessionStorage['existing_stores']=''
-        document.getElementById("content_card").innerHTML = ''
-        var parent = document.getElementById("content_card")
+        document.getElementById("all_content").innerHTML = ''
+        var parent = document.getElementById("all_content")
         
         // save current path - basically where I'm now
         pages_list = sessionStorage['navigation_history'].split(',')
@@ -106,7 +106,7 @@ function pageBack() {
 }
 
 function getStartedPage() {
-    document.getElementById("content_card").innerHTML = document.getElementById("before_connecting_element").innerHTML
+    document.getElementById("all_content").innerHTML = document.getElementById("before_connecting_element").innerHTML
     document.getElementById("go_back_button").innerHTML = ''
 }
 
@@ -250,7 +250,7 @@ function waitForDbReady() {
                 
                 if (rows!=sessionStorage['existing_stores']){
                     // if the user owns some existing stores, display them
-                    document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
+                    document.getElementById("all_content").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
                     document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
                     document.getElementById("existing_stores_desk").innerHTML = rows
                     document.getElementById("existing_stores_mobi").innerHTML = rows
@@ -261,7 +261,7 @@ function waitForDbReady() {
             } else {
                 // if the user doesn't own any store, go to the checkout creation page
                 if (document.getElementById("create_new_checkout_element").innerHTML != sessionStorage['existing_stores']){
-                    document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
+                    document.getElementById("all_content").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
                     document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
                 }
                 sessionStorage['existing_stores'] = document.getElementById("create_new_checkout_element").innerHTML
@@ -555,7 +555,7 @@ function waitForPaymentContractDataLoaded() {
         current_page = pages_list[pages_list.length-1]
         console.log('updating store page vs blockchain')
         if (current_page=='/store'){
-            document.getElementById("content_card").innerHTML = content
+            document.getElementById("all_content").innerHTML = content
             sessionStorage['window_timestamp'] = window.location.href
             setTimeout("getManageStorePage();", 2000);
         }
