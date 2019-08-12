@@ -2,7 +2,7 @@
 // Payment button
 //-----------------------------------------------------------------------------
 
-buy_modal ='<div style="color:black" class="modal fade" id="pay_preview_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document"> <div class="modal-content" style="padding:20px"> <h5 id="pay_product_name" class="modal-title" style="text-align:center"></h5> <br><br> <table class="table" style="font-size:10pt; text-align:center"> <tbody> <tr> <td style="text-align:left; width:30%">Description: </td> <td id="pay_product_description" style="text-align:left"></td> </tr> <tr> <td style="text-align:left">Price: </td> <td style="text-align:left"><span id="pay_product_priceInEth"></span><br><span id="pay_product_priceInWei" style="color:grey"></span></td> </tr> </tbody> </table> <div class="modal-body"> <div style="text-align:center"> <button id="pay_product_pay_button" product_id="" contract_address="" priceInWei="" customer_id="" account_address="" type="button" class="btn green-button" data-dismiss="modal" onclick="payForButton(this)"></button><br><br> <span style="color:grey" data-dismiss="modal">Cancel</span> </div> </div> </div> </div> </div>'
+buy_modal ='<div class="modal fade" id="pay_preview_modal" style="font-family: '+'"Museo Sans Cyrl"'+';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document"> <!-- desktop version --> <div class="modal-content" style="padding:40px; text-align:center"> <div> <img id="pay_product_store_logo" style="height:70px; border-radius: 50%" src="" /><br><br> <span id="pay_product_store_name" style="font-size:20pt; font-family: '+'"Museo Sans Cyrl"'+';font-weight: 300;"></span><br> <br><br> <div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240); text-align:left"> <div class="col-5"> <span>Product:</span> </div> <div class="col-7"> <span id="pay_product_name"></span> <br><br> </div> <div class="col-5"> <span>Description:</span> </div> <div class="col-7"> <span id="pay_product_description"></span> <br><br> </div> <div class="col-5"> <span>Price:</span> </div> <div class="col-7"> <span id="pay_product_priceInEth"></span> <br> </div> </div> <br><br> <div style="text-align:center"> <button id="pay_product_pay_button" product_id="" contract_address="" priceInWei="" customer_id="" account_address="" type="button" class="btn green-button" data-dismiss="modal" onclick="pay(this)"></button><br><br> <span style="color:grey" data-dismiss="modal">Cancel</span> </div> </div> </div> </div> </div>'
 pay_button_element = '<button type="button" class="btn green-button" product_id="{product_id}" contract_address="{contract_address}" customer_id="{customer_id}" onclick="connectWeb3andPay(this)">Buy now</button>'
 
 
@@ -29,7 +29,7 @@ document.getElementById("pay_button_form").innerHTML = buy_modal + pay_button_el
 
 
 function payPreviewForButton(data){
-    if (sessionStorage['payment_contract_products'] == 'nodata') {
+    if (sessionStorage['payment_contract_products'] == 'nodata' || sessionStorage['store_name'] == 'nodata' || sessionStorage['store_logo'] == 'nodata') {
         setTimeout(payPreviewForButton, 100)
     } else{ 
         console.log("I have the products. Now I need to load the modal")
@@ -44,11 +44,13 @@ function payPreviewForButton(data){
     
         // generate a random customer id
         customer_id = CUSTOMER_ID
+        
+        document.getElementById("pay_product_store_name").innerHTML = sessionStorage['store_name']
+        $(pay_product_store_logo).attr("src" , sessionStorage['store_logo'])
                 
         document.getElementById("pay_product_name").innerHTML = 'Buy ' + product_to_display['name']
         document.getElementById("pay_product_description").innerHTML = product_to_display['description']
         document.getElementById("pay_product_priceInEth").innerHTML = (product_to_display['priceInWei']/ Math.pow(10, 18)).toString() + ' ETH'
-        document.getElementById("pay_product_priceInWei").innerHTML = product_to_display['priceInWei'].toString() + ' Wei'
         document.getElementById("pay_product_pay_button").innerHTML = 'Pay ' + (product_to_display['priceInWei']/ Math.pow(10, 18)).toString() + ' ETH'
         $(pay_product_pay_button).attr("product_id" , PRODUCT_ID)
         $(pay_product_pay_button).attr("contract_address" , CONTRACT_ADDRESS)
@@ -115,10 +117,24 @@ function checkWeb3ConnectionForButton() {
 
 function queryPaymentContractProductsForButton(account, contract_address) {
     sessionStorage['payment_contract_products'] = 'nodata'
+    sessionStorage['store_logo']='nodata'
+    sessionStorage['store_name']='nodata'
     web3.eth.defaultAccount = account;
     var PaymentContract = web3.eth.contract(PAYMENTCONTRACT_ABI);
     var PaymentContractInstance = PaymentContract.at(contract_address);
 
+    // first query the blockchain for the store name
+    PaymentContractInstance.store_name.call(function(err, store_name) {
+        if (err) return console.log(err);
+        sessionStorage['store_name'] = store_name
+    });
+
+    // first query the blockchain for the store logo
+    PaymentContractInstance.store_logo.call(function(err, store_logo) {
+        if (err) return console.log(err);
+        sessionStorage['store_logo'] = store_logo
+    });
+        
     // first query the blockchain for the number of products in the contract
     PaymentContractInstance.productsCount.call(function(err, products_count) {
         if (err) return console.log(err);
@@ -232,6 +248,20 @@ PAYMENTCONTRACT_ABI=[
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_new_store_name",
+				"type": "string"
+			}
+		],
+		"name": "changeName",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -425,6 +455,48 @@ PAYMENTCONTRACT_ABI=[
 	{
 		"constant": true,
 		"inputs": [],
+		"name": "store_logo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fee_numerator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fee_denominator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
 		"name": "productsCount",
 		"outputs": [
 			{
@@ -437,14 +509,44 @@ PAYMENTCONTRACT_ABI=[
 		"type": "function"
 	},
 	{
+		"constant": true,
+		"inputs": [],
+		"name": "store_name",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"name": "_store_name",
+				"type": "string"
+			},
+			{
+				"name": "_store_logo",
+				"type": "string"
+			},
 			{
 				"name": "_fees_wallet",
 				"type": "address"
 			},
 			{
-				"name": "_owner",
-				"type": "address"
+				"name": "_fee_numerator",
+				"type": "uint256"
+			},
+			{
+				"name": "_fee_denominator",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
