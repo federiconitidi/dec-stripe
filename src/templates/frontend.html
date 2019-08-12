@@ -15,6 +15,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <!-- UI Javascript -->
     <script src="/static/js/dec-stripe.js"></script>
+    
+    <link rel="stylesheet" href="/static/css/bs-stepper.min.css">
+    <script src="/static/js/bs-stepper.min.js"></script>
 
     <!-- web3 -->
     <script src="/static/js/web3/web3.js"></script>
@@ -24,7 +27,6 @@
 </head>
 <body class="colorshade">
    <div id="head_bar" class="row top_bar" style="margin:0px">
-
    <div id="go_back_button" class="col-6" style="text-align:left">
    <span class="button-label" onclick="pageBack();">&larr; BACK</span>
    </div>
@@ -50,7 +52,7 @@
    <h1>Welcome to OnePay</h1>
    <br><span style="font-size:16pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
    <br><span style="font-size:16pt">1-minute setup. No company registration. No bank account needed.</span>
-   <br>
+   <br><span style="font-size:16pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
    <br>
    <br>
    <br><span>Start by connecting your wallet</span>
@@ -68,6 +70,7 @@
    <br>
    <h1>Welcome to OnePay</h1>
    <br><span style="font-size:16pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
+   <br><span style="color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
    <br>
    <br>
    <br><span>Start by connecting your wallet</span>
@@ -83,18 +86,50 @@
 
 <!-- CREATE NEW CHECKOUT -->
 <script  id="create_new_checkout_element" language="text">
-<div style="text-align:center">
- <br>
- <br>
- <span>That's great!</span><br><span>Now let's create your checkout</span>
- <br>
- <br>
- <br>
- <button type="button" class="btn green-button" onclick="createPaymentContract()">Create my store</button>
- <br>
- <br>
- <div id="existing_stores"></div>
- </div>
+<div style="text-align:center;width:90%;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
+   <br>
+   <br>
+   <div class="bs-stepper">
+      <div class="bs-stepper-header" role="tablist">
+         <!-- your steps here -->
+         <div class="step active" data-target="#logins-part">
+            <button class="step-trigger" role="tab" aria-controls="logins-part" id="logins-part-trigger">
+            <span class="bs-stepper-circle">&#10003;</span>
+            <span class="bs-stepper-label">Connect </span>
+            </button>
+         </div>
+         <div class="line"></div>
+         <div class="step" data-target="#information-part">
+            <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+            <span class="bs-stepper-circle">2</span>
+            <span class="bs-stepper-label">Create store</span>
+            </button>
+         </div>
+         <div class="line"></div>
+         <div class="step" data-target="#information-part">
+            <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+            <span class="bs-stepper-circle">3</span>
+            <span class="bs-stepper-label">Done!  </span>
+            </button>
+         </div>
+      </div>
+      <div class="bs-stepper-content">
+         <!-- your steps content here -->
+         <div id="logins-part" class="content" role="tabpanel" aria-labelledby="logins-part-trigger"></div>
+         <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger"></div>
+      </div>
+   </div>
+   <br>
+   <br>
+   <span style="font-size:16pt">That's great!</span><br><br><span>Now let's create your store.<br>It will allow you create products, set prices and accept payments in crypto.</span>
+   <br>
+   <br>
+   <br>
+   <button type="button" class="btn green-button" onclick="createPaymentContract()">Create my store</button>
+   <br>
+   <br>
+   <div id="existing_stores"></div>
+</div>
 </script>
 
 

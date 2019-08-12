@@ -235,6 +235,7 @@ function waitForDbReady() {
             if (contracts_of_this_account.length > 0 || pending_contracts_of_this_account.length > 0) {
                 // if the user owns some existing stores, display them
                 document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
+                document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
                 
                 rows = ''
                 for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
@@ -250,6 +251,7 @@ function waitForDbReady() {
             } else {
                 // if the user doesn't own any store, go to the checkout creation page
                 document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
+                document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
                 setTimeout("findStoresInBlockchain();", 2000);
             }
         }
@@ -1786,7 +1788,7 @@ function fingerprint_plugins() {
 
 
 
-FACTORY_CONTRACT="0x6f66afd0850774ab1a4780abdad5881f59bd56be"
+FACTORY_CONTRACT="0x1cd2dbaf0443b14005960f8563982a245a36f7a4"
 
 
 FACTORY_ABI=[
@@ -1794,31 +1796,19 @@ FACTORY_ABI=[
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_owner",
-				"type": "address"
-			}
-		],
-		"name": "newPaymentContract",
-		"outputs": [
+				"name": "_fee_numerator",
+				"type": "uint256"
+			},
 			{
-				"name": "",
-				"type": "address"
+				"name": "_fee_denominator",
+				"type": "uint256"
 			}
 		],
+		"name": "changeFees",
+		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"name": "_fees_wallet",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	},
 	{
 		"constant": true,
@@ -1848,6 +1838,47 @@ FACTORY_ABI=[
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"name": "_store_name",
+				"type": "string"
+			},
+			{
+				"name": "_store_logo",
+				"type": "string"
+			}
+		],
+		"name": "newPaymentContract",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fees_wallet",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "contractsCount",
@@ -1864,16 +1895,49 @@ FACTORY_ABI=[
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "fees_wallet",
+		"name": "fee_numerator",
 		"outputs": [
 			{
 				"name": "",
-				"type": "address"
+				"type": "uint256"
 			}
 		],
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fee_denominator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_fees_wallet",
+				"type": "address"
+			},
+			{
+				"name": "_fee_numerator",
+				"type": "uint256"
+			},
+			{
+				"name": "_fee_denominator",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	}
 ]
 
@@ -1919,6 +1983,20 @@ PAYMENTCONTRACT_ABI=[
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_new_store_name",
+				"type": "string"
+			}
+		],
+		"name": "changeName",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -2112,6 +2190,48 @@ PAYMENTCONTRACT_ABI=[
 	{
 		"constant": true,
 		"inputs": [],
+		"name": "store_logo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fee_numerator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fee_denominator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
 		"name": "productsCount",
 		"outputs": [
 			{
@@ -2124,14 +2244,44 @@ PAYMENTCONTRACT_ABI=[
 		"type": "function"
 	},
 	{
+		"constant": true,
+		"inputs": [],
+		"name": "store_name",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"name": "_store_name",
+				"type": "string"
+			},
+			{
+				"name": "_store_logo",
+				"type": "string"
+			},
 			{
 				"name": "_fees_wallet",
 				"type": "address"
 			},
 			{
-				"name": "_owner",
-				"type": "address"
+				"name": "_fee_numerator",
+				"type": "uint256"
+			},
+			{
+				"name": "_fee_denominator",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
