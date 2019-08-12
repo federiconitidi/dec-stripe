@@ -27,7 +27,7 @@ $(document).ready(function () {
             changePage('/allstores')
         
     } else {
-    connectWeb3()
+    
         sessionStorage['navigation_history']=''
         changePage('/#')
     }
