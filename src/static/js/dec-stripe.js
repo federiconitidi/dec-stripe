@@ -37,6 +37,7 @@ $(document).ready(function () {
 
 
 function changePage(extension) {
+        sessionStorage['existing_stores']=''
         document.getElementById("content_card").innerHTML = ''
         var parent = document.getElementById("content_card")
         
@@ -238,9 +239,6 @@ function waitForDbReady() {
         console.log('updating allstores page vs blockchain')
         if (current_page == '/allstores'){
             if (contracts_of_this_account.length > 0 || pending_contracts_of_this_account.length > 0) {
-                // if the user owns some existing stores, display them
-                document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
-                document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
                 
                 rows = ''
                 for (i = 0, len = contracts_of_this_account.length; i < len; i++) {
@@ -250,14 +248,23 @@ function waitForDbReady() {
                     rows = rows + document.getElementById("pending_store_row").innerHTML.replace(/{hash_shortened}/g, pending_contracts_of_this_account[i]['hash'].substring(0, 10) + "...").replace(/{hash}/g, pending_contracts_of_this_account[i]['hash'])
                 }
                 
-                document.getElementById("existing_stores_desk").innerHTML = rows
-                document.getElementById("existing_stores_mobi").innerHTML = rows
+                if (rows!=sessionStorage['existing_stores']){
+                    // if the user owns some existing stores, display them
+                    document.getElementById("content_card").innerHTML = document.getElementById("existing_checkouts_element").innerHTML
+                    document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
+                    document.getElementById("existing_stores_desk").innerHTML = rows
+                    document.getElementById("existing_stores_mobi").innerHTML = rows
+                }
+                sessionStorage['existing_stores'] = rows
                 setTimeout("findStoresInBlockchain();", 2000);
                 
             } else {
                 // if the user doesn't own any store, go to the checkout creation page
-                document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
-                document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
+                if (document.getElementById("create_new_checkout_element").innerHTML != sessionStorage['existing_stores']){
+                    document.getElementById("content_card").innerHTML = document.getElementById("create_new_checkout_element").innerHTML
+                    document.getElementById("go_back_button").innerHTML = '<span class="button-label" onclick="pageBack();">&larr; BACK</span>'
+                }
+                sessionStorage['existing_stores'] = document.getElementById("create_new_checkout_element").innerHTML
                 setTimeout("findStoresInBlockchain();", 2000);
             }
         }
