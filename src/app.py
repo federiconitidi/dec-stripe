@@ -9,7 +9,7 @@ Created on Thu Jun 13 14:36:46 2019
 ##from models.transaction import Transaction
 import datetime
 import requests
-from flask import Flask, render_template, request, session, json
+from flask import Flask, render_template, request, session, json, send_from_directory
 from threading import Thread
 from web3 import Web3
 from random import shuffle
@@ -26,6 +26,13 @@ app.secret_key='Federico'
 @app.route('/')
 def index():
     return render_template('frontend.html')
+
+
+@app.route('/api/<path:path>')
+def send_js(path):
+    print('mamma')
+    return send_from_directory('api', path)
+
 
 @app.route('/test/')
 def test():
