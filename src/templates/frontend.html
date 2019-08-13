@@ -52,7 +52,7 @@
    <img  style="width:40%" src="/static/img/Mobile_payment@2x.png"/>
    <br><span style="font-size:18pt; 	font-family: 'Museo Sans Cyrl';font-weight: 500;">Welcome to OnePay</span>
    <br><span style="font-size:14pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
-   <br><span style="font-size:14pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
+   <br><span style="font-size:14pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190); cursor:pointer" onclick="howDoesItWork()">What's in for me?</span>
    <br>
    <br>
    <br><span>Start by connecting your wallet</span>
@@ -69,7 +69,7 @@
    <img  style="width:70%" src="/static/img/Mobile_payment@2x.png"/><br>
    <br><span style="font-size:18pt; 	font-family: 'Museo Sans Cyrl';font-weight: 500;">Welcome to OnePay</span>
    <br><span style="font-size:14pt">OnePay is a fully decentralized way to accept crypto payments for your online business.</span>
-   <br><span style="font-size:14pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)">Why is this great?</span>
+   <br><span style="font-size:14pt; color:rgb(190,190,190); border-bottom: 1px dashed rgb(190,190,190)" onclick="howDoesItWork()">What's in for me?</span>
    <br>
    <br>
    <br><span>Start by connecting your wallet</span>
@@ -535,4 +535,53 @@
    </div>
 </div>
 </div>
+</div>
+
+
+<!-- HOW DOES IT WORK MODAL --> 
+<div class="modal fade" id="how_does_it_work_modal" style="	font-family: 'Museo Sans Cyrl';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" style="padding:20px">
+         <br>
+         <span class="modal-title" ><strong>What is OnePay?</strong></span>
+         <span class="modal-title"">OnePay is a decentralized payment gateway, think a “decentralized Stripe” built on Ethereum. While Stripe processes credit cards, onePay allows any business to process payments in Ethereum and ERC20 tokens.</span>
+         <br>
+         <br>   
+         <div style="text-align:center">
+         <iframe src="https://www.youtube.com/embed/tPdAarisugc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>      
+        </div>
+                 <br>
+         <br>   
+         <span class="modal-title" ><strong>Why do I need OnePay?</strong></span>
+         <span class="modal-title">Let’s say  you want to provide a service in exchange for crypto. For example, let’s say you want to get paid in the stablecoin DAI. You need a way to keep record of customers and orders, to track who paid and for what. OnePay is an application (smart contract) built on Ethereum that allows you to manage your incoming orders: you’ll be able to create a store, add products, set prices, process payments and keep track of the orders received. If you are familiar with a card processor like Stripe, OnePay has many of the same functionalities, but for the crypto world.</span>
+         <br>
+         <br>
+
+         <span class="modal-title" ><strong>How much does OnePay cost?</strong></span>
+         <span class="modal-title">OnePay charges a 0.5% fee on every payment processed. The OnePay application is completely free to use. </span>
+         <br>
+         <br>
+
+         <span class="modal-title" ><strong>Is OnePay safe?</strong></span>
+         <span class="modal-title">The core of OnePay is a open-source, publicly available smart contract running on the Ethereum blockchain. Everyone can independently verify the code, and you can dive deeper into our code base by looking at our technical documentation. OnePay is in beta, so we invite our users to carefully read the docs before implementing the app.</span>
+         <br>
+         <br>
+
+         <span class="modal-title" ><strong>How do I get started?</strong></span>
+         <span class="modal-title">To try OnePay you’ll need to have a web3 browser. If you are accessing OnePay via desktop using Chrome, Metamask is a great option. If you want to use OnePay from you smartphone, check out Opera browser – it is fantastic. <br>Once your browser is set up, you can start by clicking “Connect” on OnePay homepage. Once you approve OnePay access, you will be guided to create your first “store” on OnePay. A store is a smart contract that OnePay will deploy on the Ethereum blockchain, which will process the incoming payments to your business. You will be able to manage and edit your smart contract from the OnePay interface.<br>Once your store is up you will be able to add products and set prices for your items. Finally, you will find the instruction to embed the OnePay payment button on your website, by adding just a couple lines of code.</span>
+         <br>
+         <br>
+
+         <span class="modal-title" ><strong>What’s the difference with Coinbase Commerce?</strong></span>
+         <span class="modal-title">OnePay is a fully decentralized application, being essentially just a smart contract running on the Ethereum blockchain. This means it is totally borderless, permissionless and global. Anybody in any part of the world can join the Ethereum network. The same way, anybody can interact with the OnePay smart contract.<br>Individuals remain responsible for their own use of the protocol against applicable laws in their jurisdiction.</span>
+         <br>
+         <br>
+
+         <span class="modal-title" ><strong>What’s the vision behind OnePay?</strong></span>
+         <span class="modal-title">We want to enable Decentralized Finance to become useful beyond the current speculative use cases. We do this by using the core properties of the Ethereum blockchain (open, decentralized, censorship resistant) to enable a new era of accessible, permissionless commerce at a global scale.</span>
+         <br>
+         <br>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Let's get this going</button>
+      </div>
+   </div>
 </div>

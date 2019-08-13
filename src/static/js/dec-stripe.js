@@ -654,6 +654,15 @@ function createProduct(){
 }
 
 
+
+function howDoesItWork(){
+    $(how_does_it_work_modal).modal('show');
+}
+
+
+
+
+
 function createPaymentContractPopup(){
     sessionStorage['new_store_name']=''
     $(input_form_store_name).val('');
