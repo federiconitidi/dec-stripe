@@ -572,12 +572,15 @@ function waitForPaymentContractDataLoaded() {
         current_page = pages_list[pages_list.length-1]
         console.log('updating store page vs blockchain')
 
-        if (current_page=='/store' && content != sessionStorage['store_situation']){
-            document.getElementById("all_content").innerHTML = content
+        if (current_page=='/store'){
+            if (content != sessionStorage['store_situation']){
+                document.getElementById("all_content").innerHTML = content
+            }
             sessionStorage['window_timestamp'] = window.location.href
             setTimeout("getManageStorePage();", 2000);
+            sessionStorage['store_situation'] = content
         }
-        sessionStorage['store_situation'] = content
+        
     }
 }
 
