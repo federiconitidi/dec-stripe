@@ -1888,7 +1888,7 @@ function fingerprint_plugins() {
 
 
 
-FACTORY_CONTRACT="0x79b52fdca4bda447899c66c61691acc48f369c49"
+    FACTORY_CONTRACT="0x79b52fdca4bda447899c66c61691acc48f369c49"
 
 
 FACTORY_ABI=[
