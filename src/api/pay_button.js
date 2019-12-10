@@ -18,9 +18,13 @@ document.currentScript = document.currentScript || (function() {
     return scripts[scripts.length - 1];
 })();
 
-CONTRACT_ADDRESS = document.currentScript.getAttribute('data_contract_address')
-PRODUCT_ID = document.currentScript.getAttribute('data_product_id')
-CUSTOMER_ID = document.currentScript.getAttribute('data_customer_id')
+CONTRACT_ADDRESS = window.onepay_data_customer_id
+PRODUCT_ID = window.onepay_data_product_id
+CUSTOMER_ID = window.onepay_data_contract_address
+
+//CONTRACT_ADDRESS = document.currentScript.getAttribute('data_contract_address')
+//PRODUCT_ID = document.currentScript.getAttribute('data_product_id')
+//CUSTOMER_ID = document.currentScript.getAttribute('data_customer_id')
 
 console.log(CONTRACT_ADDRESS)
 console.log(PRODUCT_ID)
