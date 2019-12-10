@@ -7,7 +7,7 @@ pay_button_element = '<button type="button" class="btn_onepay green-button_onepa
 
 //$('head').append('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">');
 //$('head').append('<link rel="stylesheet" href="/static/css/icalc.css"/>');
-$('head').append('<link rel="stylesheet" href="/static/css/test.css"/>');
+$('head').append('<link rel="stylesheet" href="/static/css/onepay_button_style.css"/>');
 
 $.getScript("https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js")
 $.getScript("/static/js/web3/web3.js")
