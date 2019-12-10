@@ -23,9 +23,9 @@ PRODUCT_ID = document.currentScript.getAttribute('data_product_id')
 CUSTOMER_ID = document.currentScript.getAttribute('data_customer_id')
 
 if (CONTRACT_ADDRESS==null || PRODUCT_ID == null || CUSTOMER_ID == null) {
-CONTRACT_ADDRESS = window.onepay_data_customer_id
+CONTRACT_ADDRESS = window.onepay_data_contract_address
 PRODUCT_ID = window.onepay_data_product_id
-CUSTOMER_ID = window.onepay_data_contract_address
+CUSTOMER_ID = window.onepay_data_customer_id
 
 }
 
