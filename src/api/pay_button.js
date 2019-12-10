@@ -88,7 +88,11 @@ function payPreviewForButton(data){
 
 
 // initiate connetcion with web3 browser
-function connectWeb3andPay() {
+function connectWeb3andPay(user_input) {
+    CONTRACT_ADDRESS = question_id = user_input.getAttribute("contract_address")
+    PRODUCT_ID = question_id = user_input.getAttribute("product_id")
+    CUSTOMER_ID = question_id = user_input.getAttribute("customer_id")
+
     if (typeof web3 !== 'undefined') {
         web3Provider = web3.currentProvider
         web3 = new Web3(web3.currentProvider)

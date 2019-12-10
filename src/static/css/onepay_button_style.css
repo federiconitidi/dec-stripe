@@ -234,26 +234,7 @@
     border-color:buttonface;
     border-image:initial;
 }
- .modal-dialog_onepay{
-    position:relative;
-    width:auto;
-    margin:.5rem;
-    pointer-events:none;
-}
- .modal-content_onepay{
-    position:relative;
-    display:-ms-flexbox;
-    display:flex;
-    -ms-flex-direction:column;
-    flex-direction:column;
-    width:100%;
-    pointer-events:auto;
-    background-color:#fff;
-    background-clip:padding-box;
-    border:1px solid rgba(0,0,0,.2);
-    border-radius:.3rem;
-    outline:0;
-}
+
  *,::after,::before{
     box-sizing:border-box;
 }
