@@ -2,11 +2,12 @@
 // Payment button
 //-----------------------------------------------------------------------------
 
-buy_modal ='<div class="modal fade" id="pay_preview_modal" style="font-family: '+'"Museo Sans Cyrl"'+';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document"> <!-- desktop version --> <div class="modal-content" style="padding:40px; text-align:center"> <div> <img id="pay_product_store_logo" style="height:70px; border-radius: 50%" src="" /><br><br> <span id="pay_product_store_name" style="font-size:20pt; font-family: '+'"Museo Sans Cyrl"'+';font-weight: 300;"></span><br> <br><br> <div class="row" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240); text-align:left"> <div class="col-5"> <span>Product:</span> </div> <div class="col-7"> <span id="pay_product_name"></span> <br><br> </div> <div class="col-5"> <span>Description:</span> </div> <div class="col-7"> <span id="pay_product_description"></span> <br><br> </div> <div class="col-5"> <span>Price:</span> </div> <div class="col-7"> <span id="pay_product_priceInEth"></span> <br> </div> </div> <br><br> <div style="text-align:center"> <button id="pay_product_pay_button" product_id="" contract_address="" priceInWei="" customer_id="" account_address="" type="button" class="btn green-button" data-dismiss="modal" onclick="payForButton(this)"></button><br><br> <span style="color:grey" data-dismiss="modal">Cancel</span> </div> </div> </div> </div> </div>'
-pay_button_element = '<button type="button" class="btn green-button" product_id="{product_id}" contract_address="{contract_address}" customer_id="{customer_id}" onclick="connectWeb3andPay(this)">Buy now</button>'
+buy_modal ='<div class="modal_onepay fade_onepay" id="pay_preview_modal" style="font-family: '+'"Museo Sans Cyrl"'+';font-weight: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> <div class="modal-dialog_onepay modal-dialog-centered_onepay" role="document"> <!-- desktop version --> <div class="modal-content_onepay" style="padding:40px; text-align:center"> <div> <img id="pay_product_store_logo" style="height:70px; border-radius: 50%" src="" /><br><br> <span id="pay_product_store_name" style="font-size:20pt; font-family: '+'"Museo Sans Cyrl"'+';font-weight: 300;"></span><br> <br><br> <div class="row_onepay" style="padding:12px; border-radius: 5px;background:rgb(240, 240, 240); text-align:left"> <div class="col-5_onepay"> <span>Product:</span> </div> <div class="col-7_onepay"> <span id="pay_product_name"></span> <br><br> </div> <div class="col-5_onepay"> <span>Description:</span> </div> <div class="col-7_onepay"> <span id="pay_product_description"></span> <br><br> </div> <div class="col-5_onepay"> <span>Price:</span> </div> <div class="col-7_onepay"> <span id="pay_product_priceInEth"></span> <br> </div> </div> <br><br> <div style="text-align:center"> <button id="pay_product_pay_button" product_id="" contract_address="" priceInWei="" customer_id="" account_address="" type="button" class="btn_onepay green-button_onepay" data-dismiss="modal" onclick="payForButton(this)"></button><br><br> <span style="color:grey" data-dismiss="modal">Cancel</span> </div> </div> </div> </div> </div>'
+pay_button_element = '<button type="button" class="btn_onepay green-button_onepay" product_id="{product_id}" contract_address="{contract_address}" customer_id="{customer_id}" onclick="connectWeb3andPay(this)">Buy now</button>'
 
-$('head').append('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">');
-$('head').append('<link rel="stylesheet" href="/static/css/icalc_css.css" />');
+//$('head').append('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">');
+//$('head').append('<link rel="stylesheet" href="/static/css/icalc.css"/>');
+$('head').append('<link rel="stylesheet" href="/static/css/test.css"/>');
 
 $.getScript("https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js")
 $.getScript("/static/js/web3/web3.js")
@@ -17,9 +18,9 @@ document.currentScript = document.currentScript || (function() {
     return scripts[scripts.length - 1];
 })();
 
-CONTRACT_ADDRESS = document.currentScript.getAttribute('data-contract_address')
-PRODUCT_ID = document.currentScript.getAttribute('data-product_id')
-CUSTOMER_ID = document.currentScript.getAttribute('data-customer_id')
+CONTRACT_ADDRESS = document.currentScript.getAttribute('data_contract_address')
+PRODUCT_ID = document.currentScript.getAttribute('data_product_id')
+CUSTOMER_ID = document.currentScript.getAttribute('data_customer_id')
 
 
 // configure the button element

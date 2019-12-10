@@ -1,0 +1,324 @@
+/*! CSS Used from: https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css */
+ *,::after,::before{
+    box-sizing:border-box;
+}
+
+ button_onepay{
+    border-radius:0;
+}
+ button_onepay:focus{
+    outline:1px dotted;
+    outline:5px auto -webkit-focus-ring-color;
+}
+ button_onepay{
+    margin:0;
+    font-family:inherit;
+    font-size:inherit;
+    line-height:inherit;
+}
+ button_onepay{
+    overflow:visible;
+}
+ button_onepay{
+    text-transform:none;
+}
+ button_onepay,html [type=button]{
+    -webkit-appearance:button;
+}
+ [type=button]::-moz-focus-inner,button::-moz-focus-inner{
+    padding:0;
+    border-style:none;
+}
+
+ .row_onepay{
+    display:-ms-flexbox;
+    display:flex;
+    -ms-flex-wrap:wrap;
+    flex-wrap:wrap;
+    margin-right:-15px;
+    margin-left:-15px;
+}
+ .col-5_onepay,.col-7_onepay{
+    position:relative;
+    width:100%;
+    min-height:1px;
+    padding-right:15px;
+    padding-left:15px;
+}
+ .col-5_onepay{
+    -ms-flex:0 0 41.666667%;
+    flex:0 0 41.666667%;
+    max-width:41.666667%;
+}
+ .col-7_onepay{
+    -ms-flex:0 0 58.333333%;
+    flex:0 0 58.333333%;
+    max-width:58.333333%;
+}
+ .btn_onepay{
+    display:inline-block;
+    font-weight:400;
+    text-align:center;
+    white-space:nowrap;
+    vertical-align:middle;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    border:1px solid transparent;
+    padding:.375rem .75rem;
+    font-size:1rem;
+    line-height:1.5;
+    border-radius:.25rem;
+    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+ @media screen and (prefers-reduced-motion:reduce){
+     .btn_onepay{
+        transition:none;
+    }
+}
+ .btn_onepay:focus,.btn_onepay:hover{
+    text-decoration:none;
+}
+ .btn_onepay:focus{
+    outline:0;
+    box-shadow:0 0 0 .2rem rgba(0,123,255,.25);
+}
+ .btn_onepay:disabled{
+    opacity:.65;
+}
+ .fade_onepay{
+    transition:opacity .15s linear;
+}
+ @media screen and (prefers-reduced-motion:reduce){
+     .fade_onepay{
+        transition:none;
+    }
+}
+ .fade_onepay:not(.show){
+    opacity:0;
+}
+ .modal_onepay{
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:1050;
+    display:none;
+    overflow:hidden;
+    outline:0;
+}
+ .modal-dialog_onepay{
+    position:relative;
+    width:auto;
+    margin:.5rem;
+    pointer-events:none;
+}
+ .modal.fade_onepay .modal-dialog_onepay{
+    transition:-webkit-transform .3s ease-out;
+    transition:transform .3s ease-out;
+    transition:transform .3s ease-out,-webkit-transform .3s ease-out;
+    -webkit-transform:translate(0,-25%);
+    transform:translate(0,-25%);
+}
+ @media screen and (prefers-reduced-motion:reduce){
+     .modal.fade_onepay .modal-dialog_onepay{
+        transition:none;
+    }
+}
+ .modal-dialog-centered_onepay{
+    display:-ms-flexbox;
+    display:flex;
+    -ms-flex-align:center;
+    align-items:center;
+    min-height:calc(100% - (.5rem * 2));
+}
+ .modal-dialog-centered_onepay::before{
+    display:block;
+    height:calc(100vh - (.5rem * 2));
+    content:"";
+}
+ .modal-content_onepay{
+    position:relative;
+    display:-ms-flexbox;
+    display:flex;
+    -ms-flex-direction:column;
+    flex-direction:column;
+    width:100%;
+    pointer-events:auto;
+    background-color:#fff;
+    background-clip:padding-box;
+    border:1px solid rgba(0,0,0,.2);
+    border-radius:.3rem;
+    outline:0;
+}
+ @media (min-width:576px){
+     .modal-dialog_onepay{
+        max-width:500px;
+        margin:1.75rem auto;
+    }
+     .modal-dialog-centered_onepay{
+        min-height:calc(100% - (1.75rem * 2));
+    }
+     .modal-dialog-centered_onepay::before{
+        height:calc(100vh - (1.75rem * 2));
+    }
+}
+
+/*! CSS Used from: http://127.0.0.1:4995/static/css/test.css */
+ button_onepay,html [type=button]{
+    -webkit-appearance:button;
+}
+ .green-button_onepay{
+    background-color:rgb(95,189,255);
+    color:white;
+    border-radius:5px;
+}
+ .btn_onepay{
+    display:inline-block;
+    font-weight:400;
+    text-align:center;
+    white-space:nowrap;
+    vertical-align:middle;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    border:1px solid transparent;
+    padding:.375rem .75rem;
+    font-size:1rem;
+    line-height:1.5;
+    border-radius:.25rem;
+    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+ button_onepay{
+    text-transform:none;
+}
+ button_onepay{
+    overflow:visible;
+}
+ button_onepay{
+    margin:0;
+    font-family:inherit;
+    font-size:inherit;
+    line-height:inherit;
+}
+ button_onepay{
+    border-radius:0;
+}
+ *,::after,::before{
+    box-sizing:border-box;
+}
+ button_onepay{
+    -webkit-appearance:button;
+    -webkit-writing-mode:horizontal-tb!important;
+    text-rendering:auto;
+    color:buttontext;
+    letter-spacing:normal;
+    word-spacing:normal;
+    text-transform:none;
+    text-indent:0px;
+    text-shadow:none;
+    display:inline-block;
+    text-align:center;
+    align-items:flex-start;
+    cursor:default;
+    background-color:buttonface;
+    box-sizing:border-box;
+    margin:0em;
+    font:400 13.3333px Arial;
+    padding:1px 6px;
+    border-width:2px;
+    border-style:outset;
+    border-color:buttonface;
+    border-image:initial;
+}
+ .modal-dialog_onepay{
+    position:relative;
+    width:auto;
+    margin:.5rem;
+    pointer-events:none;
+}
+ .modal-content_onepay{
+    position:relative;
+    display:-ms-flexbox;
+    display:flex;
+    -ms-flex-direction:column;
+    flex-direction:column;
+    width:100%;
+    pointer-events:auto;
+    background-color:#fff;
+    background-clip:padding-box;
+    border:1px solid rgba(0,0,0,.2);
+    border-radius:.3rem;
+    outline:0;
+}
+ *,::after,::before{
+    box-sizing:border-box;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ [tabindex="-1"]:focus{
+    outline:0!important;
+}
+ h1,h3{
+    margin-top:0;
+    margin-bottom:.5rem;
+}
+ img{
+    vertical-align:middle;
+    border-style:none;
+}
+
+ h1,h3{
+    margin-bottom:.5rem;
+    font-family:inherit;
+    font-weight:500;
+    line-height:1.2;
+    color:inherit;
+}
+ h1{
+    font-size:2.5rem;
+}
+ h3{
+    font-size:1.75rem;
+}
+ @media print{
+     *,::after,::before{
+        text-shadow:none!important;
+        box-shadow:none!important;
+    }
+     img{
+        page-break-inside:avoid;
+    }
+     h3{
+        orphans:3;
+        widows:3;
+    }
+     h3{
+        page-break-after:avoid;
+    }
+     body{
+        min-width:992px!important;
+    }
+}
