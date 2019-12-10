@@ -22,6 +22,9 @@ CONTRACT_ADDRESS = document.currentScript.getAttribute('data_contract_address')
 PRODUCT_ID = document.currentScript.getAttribute('data_product_id')
 CUSTOMER_ID = document.currentScript.getAttribute('data_customer_id')
 
+console.log(CONTRACT_ADDRESS)
+console.log(PRODUCT_ID)
+console.log(CUSTOMER_ID)
 
 // configure the button element
 pay_button_element = pay_button_element.replace(/{product_id}/g, PRODUCT_ID).replace(/{contract_address}/g, CONTRACT_ADDRESS).replace(/{customer_id}/g, CUSTOMER_ID)
