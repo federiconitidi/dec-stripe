@@ -219,9 +219,11 @@ function payForProduct(contract_address, product_id, priceInWei, customer_id, ac
         if (!error){
             console.log('Succesfully approved payment to buy the product');
             console.log(result);
-            full_data = JSON.parse(localStorage['pending_transactions'])
-            full_data = $.merge(full_data, [{'type' : 'payForProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'], 'account' : sessionStorage['account_address']}]);
-            localStorage['pending_transactions'] = JSON.stringify(full_data)
+            try {
+                full_data = JSON.parse(localStorage['pending_transactions'])
+                full_data = $.merge(full_data, [{'type' : 'payForProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'], 'account' : sessionStorage['account_address']}]);
+                localStorage['pending_transactions'] = JSON.stringify(full_data)
+             } catch(err) {}
             //document.getElementById("pay_button_form").innerHTML = '<span style="color:green; font-size:30pt">&#10004; </span><span style="color:green; font-size:16pt">Purchase completed</span>'
             //call a function and pass them the parameters of the transaction in progress
             try {
@@ -237,15 +239,6 @@ function payForProduct(contract_address, product_id, priceInWei, customer_id, ac
     });
 }
 
-function TransactionSucceded(tx_hash){
-    web3.eth.getTransaction(tx_hash, function(err, data){
-        if (data['blockNumber']== null){
-            return false
-        } else {
-            return true
-        }
-    });
-}
 
 
 PAYMENTCONTRACT_ABI=[
