@@ -38,10 +38,10 @@ console.log(PRODUCT_ID)
 console.log(CUSTOMER_ID)
 
 // configure the button element
-pay_button_element = pay_button_element.replace(/{product_id}/g, PRODUCT_ID).replace(/{contract_address}/g, CONTRACT_ADDRESS).replace(/{customer_id}/g, CUSTOMER_ID)
+//pay_button_element = pay_button_element.replace(/{product_id}/g, PRODUCT_ID).replace(/{contract_address}/g, CONTRACT_ADDRESS).replace(/{customer_id}/g, CUSTOMER_ID)
 
 // add the modal + the button for the payment to the page inside the div
-document.getElementById("pay_button_form").innerHTML = buy_modal + pay_button_element
+//document.getElementById("pay_button_form").innerHTML = buy_modal + pay_button_element
 
 
 
