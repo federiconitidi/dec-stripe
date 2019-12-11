@@ -45,7 +45,7 @@ try{
 document.getElementById("pay_button_form").innerHTML = buy_modal + pay_button_element
 } catch(err){
 // add the modal + the button for the payment to the page inside the div
-document.getElementById("pay_button_form").innerHTML = buy_modal 
+document.getElementById("pay_button_modal").innerHTML = buy_modal 
 }
 
 
