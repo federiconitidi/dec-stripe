@@ -239,7 +239,7 @@ function payForProduct(contract_address, product_id, priceInWei, customer_id, ac
 
 function TransactionSucceded(tx_hash){
     web3.eth.getTransaction(tx_hash, function(err, data){
-        if (data['blockNumber'== null){
+        if (data['blockNumber']== null){
             return false
         } else {
             return true
