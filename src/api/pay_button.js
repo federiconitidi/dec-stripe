@@ -222,7 +222,14 @@ function payForProduct(contract_address, product_id, priceInWei, customer_id, ac
             full_data = JSON.parse(localStorage['pending_transactions'])
             full_data = $.merge(full_data, [{'type' : 'payForProduct', 'hash' : result, 'status' : 'pending', 'metadata' : sessionStorage['contract_address'], 'account' : sessionStorage['account_address']}]);
             localStorage['pending_transactions'] = JSON.stringify(full_data)
-            document.getElementById("pay_button_form").innerHTML = '<span style="color:green; font-size:30pt">&#10004; </span><span style="color:green; font-size:16pt">Purchase completed</span>'
+            //document.getElementById("pay_button_form").innerHTML = '<span style="color:green; font-size:30pt">&#10004; </span><span style="color:green; font-size:16pt">Purchase completed</span>'
+            //call a function and pass them the parameters of the transaction in progress
+            try {
+              TransactionSentOnepay(result, CONTRACT_ADDRESS, PRODUCT_ID, CUSTOMER_ID)
+            }
+            catch(err) {}
+            
+            
             
         } else {
             console.log('error');
