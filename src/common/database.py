@@ -10,7 +10,8 @@ import os
 class Database(object):
     #URI = "mongodb://127.0.0.1:27017"  #
     
-    URI = "mongodb://heroku_8zpwvc6f:b5k3g8ako8hepru6noj7ntpmsi@ds261567.mlab.com:61567/heroku_8zpwvc6f"
+    URI = "mongodb+srv://dec-stripe:rC9Le1mWqe3me5lK@cluster0.lxzah.mongodb.net/dec-stripe?retryWrites=true&w=majority" #"mongodb://heroku_8zpwvc6f:b5k3g8ako8hepru6noj7ntpmsi@ds261567.mlab.com:61567/heroku_8zpwvc6f"
+
 
 
     print(URI)
